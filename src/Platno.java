@@ -15,22 +15,26 @@ public class Platno extends JPanel {
 	private int visina;
 	private BufferedImage slika;
 	private int maxIteration = 150;
+	protected Okno okno;
 	
-	public Platno(int sirina, int visina) {
+	public Platno(Okno o, int sirina, int visina) {
 		super();
 		this.sirina = sirina;
 		this.visina = visina;
+		okno = o;
 	}
 	
+	
+	
 	public Dimension getPreferredSize(){
-		return new Dimension(sirina, visina);
+		return new Dimension(sirina*3/2, visina);
 	}
 	
 	/**
 	 * metoda, ki izracuna sliko
 	 * @param c konstanta v iteraciji z_{n+1} = z_{n}^2 + c
 	 */
-	public void narisi(Complex c){
+	public void narisi(){
 		slika = new BufferedImage(sirina, visina, BufferedImage.TYPE_BYTE_BINARY);
 		for (int x=0; x < sirina; x++){
 			for (int y=0; y < visina; y++){
@@ -39,7 +43,9 @@ public class Platno extends JPanel {
 				double a = koordinati.get(0);
 				double b = koordinati.get(1);
 				// izracuna barvo
-				int barva = dolociBarvo(a, b, c);
+				double real = (double) okno.realC.getValue();
+				double imag = (double) okno.imagC.getValue();
+				int barva = dolociBarvo(a, b, new Complex(real, imag));
 				// nastavi pikslu barvo
 				slika.setRGB(x, y, barva);
 			}
