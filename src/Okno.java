@@ -5,6 +5,7 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
+import javax.swing.JTextField;
 
 
 @SuppressWarnings("serial")
@@ -13,6 +14,7 @@ public class Okno extends JFrame {
 	protected Platno platno;
 	protected JSpinner realC;
 	protected JSpinner imagC;
+	protected JTextField maxIteracij;
 	
 	
 	public Okno(){
@@ -56,6 +58,13 @@ public class Okno extends JFrame {
 		btnNarisi.setBounds(625, 400, 100, 25);
 		platno.add(btnNarisi);
 		
+		JLabel lblMaxIteracij = new JLabel("maxIteracij:");
+		lblMaxIteracij.setBounds(553, 180, 80, 20);
+		platno.add(lblMaxIteracij);
+		
+		maxIteracij = new JTextField("150");
+		maxIteracij.setBounds(635, 180, 90, 20);
+		platno.add(maxIteracij);
 
 	}
 }

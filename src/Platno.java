@@ -14,7 +14,7 @@ public class Platno extends JPanel {
 	private int sirina;
 	private int visina;
 	private BufferedImage slika;
-	private int maxIteration = 150;
+	private int maxIteration;
 	protected Okno okno;
 	
 	public Platno(Okno o, int sirina, int visina) {
@@ -64,6 +64,7 @@ public class Platno extends JPanel {
 	 */
 	public int dolociBarvo(double a, double b, Complex c){
 		Complex z = new Complex(a, b);
+		maxIteration = Integer.parseInt(okno.maxIteracij.getText());
 		for (int j=0; j <= maxIteration; j++){
 			if (z.mod() > 10) {
 				return Color.BLACK.getRGB();
