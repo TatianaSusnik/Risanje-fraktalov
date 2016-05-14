@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+import javax.swing.JComboBox;
 
 
 @SuppressWarnings("serial")
@@ -15,6 +16,7 @@ public class Okno extends JFrame {
 	protected JSpinner realC;
 	protected JSpinner imagC;
 	protected JTextField maxIteracij;
+	protected JComboBox<String> izbiraFraktala;
 	
 	
 	public Okno(){
@@ -65,6 +67,11 @@ public class Okno extends JFrame {
 		maxIteracij = new JTextField("150");
 		maxIteracij.setBounds(635, 180, 90, 20);
 		platno.add(maxIteracij);
+		
+		String[] fraktali = new String[] {"Juliajeva mnozica", "Mandelbrotova mnozica"};
+		izbiraFraktala = new JComboBox<>(fraktali);
+		izbiraFraktala.setBounds(553, 80, 172, 20);
+		platno.add(izbiraFraktala);
 
 	}
 }

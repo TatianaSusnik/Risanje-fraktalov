@@ -9,7 +9,7 @@ import javax.swing.JPanel;
 
 
 @SuppressWarnings("serial")
-public class Platno extends JPanel {
+public class Platno extends JPanel{
 	
 	private int sirina;
 	private int visina;
@@ -35,6 +35,16 @@ public class Platno extends JPanel {
 	 * @param c konstanta v iteraciji z_{n+1} = z_{n}^2 + c
 	 */
 	public void narisi(){
+
+		if (okno.izbiraFraktala.getSelectedItem()=="Juliajeva mnozica") {
+			narisiJulia();
+		}
+		if (okno.izbiraFraktala.getSelectedItem()=="Mandelbrotova mnozica") {
+			narisiMandelbrot();
+		}
+	}
+	
+	public void narisiJulia(){
 		slika = new BufferedImage(sirina, visina, BufferedImage.TYPE_BYTE_BINARY);
 		for (int x=0; x < sirina; x++){
 			for (int y=0; y < visina; y++){
@@ -45,7 +55,24 @@ public class Platno extends JPanel {
 				// izracuna barvo
 				double real = (double) okno.realC.getValue();
 				double imag = (double) okno.imagC.getValue();
-				int barva = dolociBarvo(a, b, new Complex(real, imag));
+				int barva = dolociBarvoJulia(a, b, new Complex(real, imag));
+				// nastavi pikslu barvo
+				slika.setRGB(x, y, barva);
+			}
+		}
+		repaint();
+	}
+	
+	public void narisiMandelbrot(){
+		slika = new BufferedImage(sirina, visina, BufferedImage.TYPE_BYTE_BINARY);
+		for (int x=0; x < sirina; x++){
+			for (int y=0; y < visina; y++){
+				// izracuna kompleksni koordinati tocke
+				Vector<Double> koordinati = kompleksneKoordinate(x, y);
+				double a = koordinati.get(0);
+				double b = koordinati.get(1);
+				// izracuna barvo
+				int barva = dolociBarvoMandelbrot(new Complex(a, b));
 				// nastavi pikslu barvo
 				slika.setRGB(x, y, barva);
 			}
@@ -62,8 +89,28 @@ public class Platno extends JPanel {
 	 * @param c konstanta v iteraciji z_{n+1} = z_{n}^2 + c
 	 * @return barva piksla
 	 */
-	public int dolociBarvo(double a, double b, Complex c){
+	public int dolociBarvoJulia(double a, double b, Complex c){
 		Complex z = new Complex(a, b);
+		maxIteration = Integer.parseInt(okno.maxIteracij.getText());
+		for (int j=0; j <= maxIteration; j++){
+			if (z.mod() > 10) {
+				return Color.BLACK.getRGB();
+			}
+			else {
+				z = (z.times(z)).plus(c);
+			}
+		}
+		return Color.WHITE.getRGB();
+	}
+	
+	/**
+	 * pikslu doloci barvo - crna, ce gre tocka (0,0) pri konstanti c v neskoncnost 
+	 * oz. bela, ce tocka (0,0) med iteriranjem ne gre v neskoncnost
+	 * @param c tocka v kompleksni ravnini = konstanta v iteraciji z_{n+1} = z_{n}^2 + c
+	 * @return barva piksla
+	 */
+	public int dolociBarvoMandelbrot(Complex c){
+		Complex z = new Complex(0, 0);
 		maxIteration = Integer.parseInt(okno.maxIteracij.getText());
 		for (int j=0; j <= maxIteration; j++){
 			if (z.mod() > 10) {
@@ -94,6 +141,7 @@ public class Platno extends JPanel {
 	
 	
 	
+	
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
@@ -101,5 +149,7 @@ public class Platno extends JPanel {
 			g.drawImage(slika, 0, 0, getBackground(), null);
 		}
 	}
+
+
 
 }
