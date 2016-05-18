@@ -5,6 +5,8 @@ import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.JPanel;
@@ -19,6 +21,7 @@ public class Platno extends JPanel implements MouseListener{
 	private BufferedImage slika;
 	private int maxIteration;
 	protected Okno okno;
+	private List<DodatnoOkno> dodatnaOkna;
 	
 	public Platno(Okno o, int sirina, int visina) {
 		super();
@@ -26,6 +29,7 @@ public class Platno extends JPanel implements MouseListener{
 		this.visina = visina;
 		okno = o;
 		this.addMouseListener(this);
+		dodatnaOkna = new ArrayList<DodatnoOkno>();
 	}
 	
 	
@@ -39,7 +43,12 @@ public class Platno extends JPanel implements MouseListener{
 	 * @param c konstanta v iteraciji z_{n+1} = z_{n}^2 + c
 	 */
 	public void narisi(){
-
+		if (dodatnaOkna!=null){
+		for (DodatnoOkno o: dodatnaOkna){
+			o.dispose();
+		}
+		dodatnaOkna.clear();
+		}
 		if (okno.izbiraFraktala.getSelectedItem()==okno.getJulia()) {
 			narisiJulia();
 		}
@@ -276,7 +285,10 @@ public class Platno extends JPanel implements MouseListener{
 			Vector<Double> koordinati = kompleksneKoordinate(x, y);
 			double a = koordinati.get(0);
 			double b = koordinati.get(1);
+			a = ((double) Math.round(1000*a)/1000);
+			b = ((double) Math.round(1000*b)/1000);
 			DodatnoOkno novoOkno = new DodatnoOkno(a, b, this.okno);
+			dodatnaOkna.add(novoOkno);
 			novoOkno.pack();
 			novoOkno.setVisible(true);
 		}

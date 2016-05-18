@@ -27,7 +27,7 @@ public class MiniPlatno extends JPanel {
 	
 	
 	public Dimension getPreferredSize(){
-		return new Dimension(sirina, visina);
+		return new Dimension(sirina, visina+35);
 	}
 	
 	

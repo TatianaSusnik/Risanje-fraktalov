@@ -36,7 +36,6 @@ public class Okno extends JFrame {
 		
 		// izbira realne komponente konstante c v iteraciji z_{n+1} = z_{n}^2 + c
 		realC = new JTextField("0");
-//		realC.setModel(new SpinnerNumberModel(new Double(0.00), null, null, new Double(0.01)));
 		realC.setBounds(583, 155, 50, 20);
 		platno.add(realC);
 		
@@ -47,7 +46,6 @@ public class Okno extends JFrame {
 		
 		// izbira imaginarne komponente konstante c v iteraciji z_{n+1} = z_{n}^2 + c
 		imagC = new JTextField("0");
-//		imagC.setModel(new SpinnerNumberModel(new Double(0.00), null, null, new Double(0.01)));
 		imagC.setBounds(675, 155, 50, 20);
 		platno.add(imagC);
 		
