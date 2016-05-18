@@ -7,6 +7,7 @@ Uporabnik lahko izbere parametre s katerimi je fraktal določen.
 
 Možne razširitve:
 * bolj napreden in hitrejši postopek risanja fraktala, 
+* ob kliku na Mandelbrotovo mnozico se odpre novo okno s pripadajoco Juliajevo mnozico,
 * uporabnik lahko interaktivno povečuje podrobnosti v sliki, 
 * uporabnik lahko izbere barvno paleto, s katero je narisan fraktal, 
 * izvoz slike v datoteko.
