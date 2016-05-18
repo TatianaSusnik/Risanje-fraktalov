@@ -2,14 +2,17 @@
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.util.Vector;
 
 import javax.swing.JPanel;
 
 
+
 @SuppressWarnings("serial")
-public class Platno extends JPanel{
+public class Platno extends JPanel implements MouseListener{
 	
 	private int sirina;
 	private int visina;
@@ -22,6 +25,7 @@ public class Platno extends JPanel{
 		this.sirina = sirina;
 		this.visina = visina;
 		okno = o;
+		this.addMouseListener(this);
 	}
 	
 	
@@ -96,6 +100,7 @@ public class Platno extends JPanel{
 		}
 		repaint();
 	}
+	
 	
 	public void narisiMandelbrot(){
 		slika = new BufferedImage(sirina, visina, BufferedImage.TYPE_INT_RGB);
@@ -260,6 +265,56 @@ public class Platno extends JPanel{
 			g.drawImage(slika, 0, 0, getBackground(), null);
 		}
 	}
+
+
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		int x = e.getX();
+		if (okno.izbiraFraktala.getSelectedItem()==okno.getMandelbrot() && x < sirina) {
+			int y = e.getY();
+			Vector<Double> koordinati = kompleksneKoordinate(x, y);
+			double a = koordinati.get(0);
+			double b = koordinati.get(1);
+			DodatnoOkno novoOkno = new DodatnoOkno(a, b, this.okno);
+			novoOkno.pack();
+			novoOkno.setVisible(true);
+		}
+	}
+
+
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
 
 
 
