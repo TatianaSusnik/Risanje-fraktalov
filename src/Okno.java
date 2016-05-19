@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
@@ -115,10 +116,10 @@ public class Okno extends JFrame {
 		            	if (izbiraFraktala.getSelectedItem()==julia) {
 		            		String juliaIme = "";
 		            		if (Double.parseDouble(imagC.getText())<0) {
-		            			juliaIme = String.format("C:/Julia%.3f%.3fi", Double.parseDouble(realC.getText()), Double.parseDouble(imagC.getText()));
+		            			juliaIme = String.format("C:/Julia%.3f%.3fi.png", Double.parseDouble(realC.getText()), Double.parseDouble(imagC.getText()));
 		            		}
 		            		else {
-		            			juliaIme = String.format("C:/Julia%.3f+%.3fi", Double.parseDouble(realC.getText()), Double.parseDouble(imagC.getText()));
+		            			juliaIme = String.format("C:/Julia%.3f+%.3fi.png", Double.parseDouble(realC.getText()), Double.parseDouble(imagC.getText()));
 		            		}
 		            		fileChooser.setSelectedFile(new File(juliaIme));
 			            	
@@ -130,13 +131,21 @@ public class Okno extends JFrame {
 		            	if (userSelection == JFileChooser.APPROVE_OPTION) {
 		            		File fileToSave = fileChooser.getSelectedFile();
 		            		String[] koncnica = fileToSave.getAbsolutePath().split("\\.");
-		            		if (koncnica.length == 2) {
+		            		if (koncnica.length == 1) {
+		            			fileToSave =  new File(fileToSave.getAbsoluteFile()+".png");
+		            		}
+		            		if(fileToSave.exists()) {
+		            		    int odgovor = JOptionPane.showConfirmDialog(null, 
+		            		        "Datoteka s tem imenom ze obstaja. Zamenjam?", "Overwrite Prompt",  
+		            		        JOptionPane.YES_NO_OPTION);
+		            		    if (odgovor == JOptionPane.YES_OPTION) {
+		            		    	ImageIO.write(image,"png", fileToSave);
+		            		    }
+		            		}
+		            		else {
 		            			ImageIO.write(image,"png", fileToSave);
 		            		}
-		            		else if (koncnica.length == 1) {
-		            			ImageIO.write(image,"png", new File(fileToSave.getAbsoluteFile()+".png"));
 		            		}
-		            	}
 		                }
 		            catch(Exception ex){
 		                 ex.printStackTrace();
