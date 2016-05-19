@@ -22,6 +22,7 @@ public class Platno extends JPanel implements MouseListener{
 	private int maxIteration;
 	protected Okno okno;
 	private List<DodatnoOkno> dodatnaOkna;
+	private Boolean jeMandelbrot;
 	
 	public Platno(Okno o, int sirina, int visina) {
 		super();
@@ -49,10 +50,12 @@ public class Platno extends JPanel implements MouseListener{
 		}
 		dodatnaOkna.clear();
 		}
+		jeMandelbrot = false;
 		if (okno.izbiraFraktala.getSelectedItem()==okno.getJulia()) {
 			narisiJulia();
 		}
 		if (okno.izbiraFraktala.getSelectedItem()==okno.getMandelbrot()) {
+			jeMandelbrot = true;
 			narisiMandelbrot();
 		}
 	}
@@ -280,7 +283,7 @@ public class Platno extends JPanel implements MouseListener{
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		int x = e.getX();
-		if (okno.izbiraFraktala.getSelectedItem()==okno.getMandelbrot() && x < sirina) {
+		if (jeMandelbrot && x < sirina) {
 			int y = e.getY();
 			Vector<Double> koordinati = kompleksneKoordinate(x, y);
 			double a = koordinati.get(0);
