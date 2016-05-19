@@ -61,7 +61,7 @@ public class Platno extends JPanel implements MouseListener{
 	}
 	
 	public void narisiJulia(){
-		slika = new BufferedImage(sirina, visina, BufferedImage.TYPE_INT_RGB);
+		setSlika(new BufferedImage(sirina, visina, BufferedImage.TYPE_INT_RGB));
 		Color color = null;
 		int iteracije=0;
 		for (int x=0; x < sirina; x++){
@@ -107,7 +107,7 @@ public class Platno extends JPanel implements MouseListener{
 					color = new Color(barva, barva, barva);
 				}
 				// nastavi pikslu barvo
-				slika.setRGB(x, y, color.getRGB());
+				getSlika().setRGB(x, y, color.getRGB());
 			}
 		}
 		repaint();
@@ -115,7 +115,7 @@ public class Platno extends JPanel implements MouseListener{
 	
 	
 	public void narisiMandelbrot(){
-		slika = new BufferedImage(sirina, visina, BufferedImage.TYPE_INT_RGB);
+		setSlika(new BufferedImage(sirina, visina, BufferedImage.TYPE_INT_RGB));
 		Color color = null;
 		int iteracije;
 		for (int x=0; x < sirina; x++){
@@ -159,7 +159,7 @@ public class Platno extends JPanel implements MouseListener{
 					color = new Color(barva, barva, barva);
 				}
 				// nastavi pikslu barvo
-				slika.setRGB(x, y, color.getRGB());
+				getSlika().setRGB(x, y, color.getRGB());
 			}
 		}
 		repaint();
@@ -273,8 +273,8 @@ public class Platno extends JPanel implements MouseListener{
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		if (slika != null) {
-			g.drawImage(slika, 0, 0, getBackground(), null);
+		if (getSlika() != null) {
+			g.drawImage(getSlika(), 0, 0, getBackground(), null);
 		}
 	}
 
@@ -327,6 +327,18 @@ public class Platno extends JPanel implements MouseListener{
 	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
+	}
+
+
+
+	public BufferedImage getSlika() {
+		return slika;
+	}
+
+
+
+	public void setSlika(BufferedImage slika) {
+		this.slika = slika;
 	}
 
 

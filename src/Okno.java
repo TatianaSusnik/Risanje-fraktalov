@@ -1,10 +1,14 @@
 import javax.swing.JFrame;
+import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 
 
 @SuppressWarnings("serial")
@@ -57,7 +61,7 @@ public class Okno extends JFrame {
 				platno.narisi();
 			}
 		});
-		btnNarisi.setBounds(625, 425, 100, 25);
+		btnNarisi.setBounds(553, 425, 80, 25);
 		platno.add(btnNarisi);
 		
 		JLabel lblMaxIteracij = new JLabel("maksimalno stevilo iteracij:");
@@ -97,6 +101,50 @@ public class Okno extends JFrame {
 		izbiraBarv = new JComboBox(barvneOpcije);
 		izbiraBarv.setBounds(553, 305, 172, 20);
 		platno.add(izbiraBarv);
+		
+		
+		// gumb za shranjevanje slike
+		JButton btnShrani = new JButton("Shrani");
+		btnShrani.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				 BufferedImage image = platno.getSlika();
+		            try{
+		            	JFrame shraniFrame = new JFrame();
+		            	JFileChooser fileChooser = new JFileChooser();
+		            	fileChooser.setDialogTitle("Shrani");
+		            	if (izbiraFraktala.getSelectedItem()==julia) {
+		            		String juliaIme = "";
+		            		if (Double.parseDouble(imagC.getText())<0) {
+		            			juliaIme = String.format("C:/Julia%.3f%.3fi", Double.parseDouble(realC.getText()), Double.parseDouble(imagC.getText()));
+		            		}
+		            		else {
+		            			juliaIme = String.format("C:/Julia%.3f+%.3fi", Double.parseDouble(realC.getText()), Double.parseDouble(imagC.getText()));
+		            		}
+		            		fileChooser.setSelectedFile(new File(juliaIme));
+			            	
+		            	}
+		            	if (izbiraFraktala.getSelectedItem()==mandelbrot) {
+		            		fileChooser.setSelectedFile(new File("C:/Mandelbrot"));
+		            	}
+		            	int userSelection = fileChooser.showSaveDialog(shraniFrame);
+		            	if (userSelection == JFileChooser.APPROVE_OPTION) {
+		            		File fileToSave = fileChooser.getSelectedFile();
+		            		String[] koncnica = fileToSave.getAbsolutePath().split("\\.");
+		            		if (koncnica.length == 2) {
+		            			ImageIO.write(image,"png", fileToSave);
+		            		}
+		            		else if (koncnica.length == 1) {
+		            			ImageIO.write(image,"png", new File(fileToSave.getAbsoluteFile()+".png"));
+		            		}
+		            	}
+		                }
+		            catch(Exception ex){
+		                 ex.printStackTrace();
+		                }
+			}
+		});
+		btnShrani.setBounds(645, 425, 80, 25);
+		platno.add(btnShrani);
 		
 
 	}
