@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.swing.filechooser.FileSystemView;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 
@@ -113,19 +114,20 @@ public class Okno extends JFrame {
 		            	JFrame shraniFrame = new JFrame();
 		            	JFileChooser fileChooser = new JFileChooser();
 		            	fileChooser.setDialogTitle("Shrani");
+		            	File home = FileSystemView.getFileSystemView().getHomeDirectory();
 		            	if (izbiraFraktala.getSelectedItem()==julia) {
 		            		String juliaIme = "";
 		            		if (Double.parseDouble(imagC.getText())<0) {
-		            			juliaIme = String.format("C:/Julia%.3f%.3fi.png", Double.parseDouble(realC.getText()), Double.parseDouble(imagC.getText()));
+		            			juliaIme = String.format("/Julia%.3f%.3fi.png", Double.parseDouble(realC.getText()), Double.parseDouble(imagC.getText()));
 		            		}
 		            		else {
-		            			juliaIme = String.format("C:/Julia%.3f+%.3fi.png", Double.parseDouble(realC.getText()), Double.parseDouble(imagC.getText()));
+		            			juliaIme = String.format("/Julia%.3f+%.3fi.png", Double.parseDouble(realC.getText()), Double.parseDouble(imagC.getText()));
 		            		}
-		            		fileChooser.setSelectedFile(new File(juliaIme));
+		            		fileChooser.setSelectedFile(new File(home.getAbsolutePath()+juliaIme));
 			            	
 		            	}
 		            	if (izbiraFraktala.getSelectedItem()==mandelbrot) {
-		            		fileChooser.setSelectedFile(new File("C:/Mandelbrot"));
+		            		fileChooser.setSelectedFile(new File(home.getAbsolutePath()+"/Mandelbrot"));
 		            	}
 		            	int userSelection = fileChooser.showSaveDialog(shraniFrame);
 		            	if (userSelection == JFileChooser.APPROVE_OPTION) {
