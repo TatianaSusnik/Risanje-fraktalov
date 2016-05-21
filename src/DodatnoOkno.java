@@ -18,8 +18,8 @@ public class DodatnoOkno extends JFrame {
 		
 		this.real = real;
 		this.imag = imag;
-		platno = new MiniPlatno(this, okno, 250, 250);
-		platno.setBounds(0, 0, 250, 250);
+		platno = new MiniPlatno(this, okno, 251, 251);
+		platno.setBounds(0, 0, 251, 251);
 		getContentPane().add(platno);
 		platno.narisiMiniJulia(real, imag);
 		platno.setLayout(null);

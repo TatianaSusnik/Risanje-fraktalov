@@ -138,7 +138,7 @@ public class Platno extends JPanel implements MouseListener{
 		Color color = null;
 		int iteracije;
 		for (int x=0; x < sirina; x++){
-			for (int y=0; y < visina; y++){
+			for (int y=0; y <= visina/2; y++){
 				// izracuna kompleksni koordinati tocke
 				Vector<Double> koordinati = kompleksneKoordinate(x, y);
 				double a = koordinati.get(0);
@@ -179,7 +179,7 @@ public class Platno extends JPanel implements MouseListener{
 				}
 				// nastavi pikslu barvo
 				getSlika().setRGB(x, y, color.getRGB());
-//				getSlika().setRGB(x, visina-1-y, color.getRGB());
+				getSlika().setRGB(x, visina-1-y, color.getRGB());
 			}
 		}
 		repaint();
@@ -281,8 +281,8 @@ public class Platno extends JPanel implements MouseListener{
 	 * @return vrne kompleksni koordinati tocke
 	 */
 	public Vector<Double> kompleksneKoordinate(int x, int y){
-		double a = 4*(double)x/sirina - 2;
-		double b = 2 - 4*(double)y/visina;
+		double a = 4*(double)x/(sirina-1) - 2;
+		double b = 2 - 4*(double)y/(visina-1);
 		Vector<Double> koordinati = new Vector<Double>(2);
 		koordinati.add(a);
 		koordinati.add(b);

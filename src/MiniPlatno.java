@@ -156,8 +156,8 @@ public class MiniPlatno extends JPanel {
 	 * @return vrne kompleksni koordinati tocke
 	 */
 	public Vector<Double> kompleksneKoordinate(int x, int y){
-		double a = 4*(double)x/sirina - 2;
-		double b = 2 - 4*(double)y/visina;
+		double a = 4*(double)x/(sirina-1) - 2;
+		double b = 2 - 4*(double)y/(visina-1);
 		Vector<Double> koordinati = new Vector<Double>(2);
 		koordinati.add(a);
 		koordinati.add(b);
