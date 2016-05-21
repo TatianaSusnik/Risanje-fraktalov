@@ -33,53 +33,74 @@ public class MiniPlatno extends JPanel {
 	
 	public void narisiMiniJulia(double real, double imag){
 		slika = new BufferedImage(sirina, visina, BufferedImage.TYPE_INT_RGB);
-		Color color = null;
-		int iteracije=0;
-		for (int x=0; x < sirina; x++){
-			for (int y=0; y < visina; y++){
-				// izracuna kompleksni koordinati tocke
-				Vector<Double> koordinati = kompleksneKoordinate(x, y);
-				double a = koordinati.get(0);
-				double b = koordinati.get(1);
-				// izracuna barvo
-				maxIteration = Integer.parseInt(okno.maxIteracij.getText());
-				if (okno.izbiraBarv.getSelectedItem()==okno.getCrnoBelo1()) {
-					iteracije = steviloIteracijJulia(a, b, new Complex(real, imag));
-					if (iteracije >= maxIteration) {
-						color = new Color(255, 255, 255);
-					}
-					else {
-						color = new Color(0, 0, 0);
-					}
+		if (imag==0){
+			for (int x=0; x <= sirina/2; x++){
+				for (int y=0; y <= visina/2; y++){
+					Color color = barvaJulia(x, y, real, imag);
+					// nastavi pikslu barvo
+					slika.setRGB(x, y, color.getRGB());
+					slika.setRGB(sirina-1-x, y, color.getRGB());
+					slika.setRGB(x, visina-1-y, color.getRGB());
+					slika.setRGB(sirina-1-x, visina-1-y, color.getRGB());
 				}
-				if (okno.izbiraBarv.getSelectedItem()==okno.getSivo()) {
-					iteracije = steviloIteracijJulia(a, b, new Complex(real, imag));
-					int barva = (int)(255-(Math.sqrt((double)iteracije/maxIteration)*255));
-					color = new Color(barva, barva, barva);
+			}
+		}
+		else {
+			for (int x=0; x <= sirina/2; x++){
+				for (int y=0; y < visina; y++){
+					Color color = barvaJulia(x, y, real, imag);
+					// nastavi pikslu barvo
+					slika.setRGB(x, y, color.getRGB());
+					slika.setRGB(sirina-1-x, visina-1-y, color.getRGB());
 				}
-				if (okno.izbiraBarv.getSelectedItem()==okno.getBarva1()) {
-					iteracije = steviloIteracijJulia(a, b,new Complex(real, imag));
-					int colorR = (int)(255-(Math.sqrt((double)iteracije/maxIteration))*255);
-					int colorG = (int)(255-((double)iteracije/maxIteration)*255);
-					int colorB = (int)(255-(((double)iteracije/maxIteration)*((double)iteracije/maxIteration))*255-20);
-					if (colorB<0){
-						colorB = 0;
-					}
-					color = new Color(colorR, colorG, colorB);
-					if (iteracije >= maxIteration){
-						color = new Color(50, 100, 100);
-					}
-				}
-				
-				if (okno.izbiraBarv.getSelectedItem()==okno.getCrnoBelo2()) {
-					int barva = dolociBarvoJuliaCrnoBelo(a, b,new Complex(real, imag));
-					color = new Color(barva, barva, barva);
-				}
-				// nastavi pikslu barvo
-				slika.setRGB(x, y, color.getRGB());
 			}
 		}
 		repaint();
+	}
+	
+	
+	public Color barvaJulia(int x, int y, double real, double imag) {
+		Color color = null;
+		int iteracije=0;
+		// izracuna kompleksni koordinati tocke
+		Vector<Double> koordinati = kompleksneKoordinate(x, y);
+		double a = koordinati.get(0);
+		double b = koordinati.get(1);
+		// izracuna barvo
+		maxIteration = Integer.parseInt(okno.maxIteracij.getText());
+		if (okno.izbiraBarv.getSelectedItem()==okno.getCrnoBelo1()) {
+			iteracije = steviloIteracijJulia(a, b, new Complex(real, imag));
+			if (iteracije >= maxIteration) {
+				color = new Color(255, 255, 255);
+			}
+			else {
+				color = new Color(0, 0, 0);
+			}
+		}
+		if (okno.izbiraBarv.getSelectedItem()==okno.getSivo()) {
+			iteracije = steviloIteracijJulia(a, b, new Complex(real, imag));
+			int barva = (int)(255-(Math.sqrt((double)iteracije/maxIteration)*255));
+			color = new Color(barva, barva, barva);
+		}
+		if (okno.izbiraBarv.getSelectedItem()==okno.getBarva1()) {
+			iteracije = steviloIteracijJulia(a, b,new Complex(real, imag));
+			int colorR = (int)(255-(Math.sqrt((double)iteracije/maxIteration))*255);
+			int colorG = (int)(255-((double)iteracije/maxIteration)*255);
+			int colorB = (int)(255-(((double)iteracije/maxIteration)*((double)iteracije/maxIteration))*255-20);
+			if (colorB<0){
+				colorB = 0;
+			}
+			color = new Color(colorR, colorG, colorB);
+			if (iteracije >= maxIteration){
+				color = new Color(50, 100, 100);
+			}
+		}
+		
+		if (okno.izbiraBarv.getSelectedItem()==okno.getCrnoBelo2()) {
+			int barva = dolociBarvoJuliaCrnoBelo(a, b,new Complex(real, imag));
+			color = new Color(barva, barva, barva);
+		}
+		return color;
 	}
 	
 		
