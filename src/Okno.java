@@ -27,8 +27,8 @@ public class Okno extends JFrame {
 		setTitle("Fraktali");
 		
 		// platno na katerega se izrise fraktal
-		platno = new Platno(this, 501, 501);
-		platno.setBounds(10, 23, 501, 501);
+		platno = new Platno(this, 500, 500);
+		platno.setBounds(10, 23, 500, 500);
 		getContentPane().add(platno);
 		platno.setLayout(null);
 		

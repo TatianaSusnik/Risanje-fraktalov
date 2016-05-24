@@ -26,6 +26,10 @@ public class Platno extends JPanel implements MouseListener{
 	private Boolean jeMandelbrot;
 	private Thread vlakno;
 	private boolean ustavi;
+	private int sirinaKR = 4;
+	private int visinaKR = 4;
+	private int izhodisceX = 250;
+	private int izhodisceY = 250;
 	
 	public Platno(Okno o, int sirina, int visina) {
 		super();
@@ -81,30 +85,150 @@ public class Platno extends JPanel implements MouseListener{
 	public void narisiJulia() throws InterruptedException {
 		setSlika(new BufferedImage(sirina, visina, BufferedImage.TYPE_INT_RGB));
 		if ((double) Double.parseDouble(okno.imagC.getText())==0){
-			for (int x=0; x <= sirina/2; x++){
-				if (ustavi) {return;}
-				for (int y=0; y <= visina/2; y++){
-					Color color = barvaJulia(x, y);
-					// nastavi pikslu barvo
-					getSlika().setRGB(x, y, color.getRGB());
-					getSlika().setRGB(sirina-1-x, y, color.getRGB());
-					getSlika().setRGB(x, visina-1-y, color.getRGB());
-					getSlika().setRGB(sirina-1-x, visina-1-y, color.getRGB());
+			// imaginarni del konstante je nic
+			if (izhodisceX >= 0 && izhodisceX < sirina){ 
+				// izhodisceX je na platnu
+				if (izhodisceX > sirina/2) {
+					// izhodisceX je na desni polovici platna
+					for (int x=0; x <= izhodisceX; x++){
+						if (ustavi) {return;}
+						if (izhodisceY >= 0 && izhodisceY < visina){
+							// izhodisceY je na platnu
+							if (izhodisceY > visina/2) {
+								// izhodisceY je na desni polovici platna
+								for (int y=0; y <= izhodisceY; y++){
+									risiJulia0(x, y);
+								}
+							}
+							else {
+								// izhodisceY je na levi polovici platna
+								for (int y=izhodisceY; y < visina; y++) {
+									risiJulia0(x, y);
+								}
+							}
+						}
+						else {
+							// izhodisceY je zunaj platna
+							for (int y=0; y < visina; y++) {
+								risiJulia0(x, y);
+							}
+						}
+					}
+				}
+				else {
+					// izhodisceX je na levi polovici platna
+					for (int x=izhodisceX; x < sirina; x++) {
+						if (ustavi) {return;}
+						if (izhodisceY >= 0 && izhodisceY < visina){
+							// izhodisceY je na platnu
+							if (izhodisceY > visina/2) {
+								// izhodisceY je na desni polovici platna
+								for (int y=0; y <= izhodisceY; y++){
+									risiJulia0(x, y);
+								}
+							}
+							else {
+								// izhodisceY je na levi polovici platna
+								for (int y=izhodisceY; y < visina; y++) {
+									risiJulia0(x, y);
+								}
+							}
+						}
+						else {
+							// izhodisceY je zunaj platna
+							for (int y=0; y < visina; y++) {
+								risiJulia0(x, y);
+							}
+						}
+					}
 				}
 			}
-		}
+			else {
+				// izhodisceX zunaj platna
+				for (int x=0; x < sirina; x++) {
+					if (ustavi) {return;}
+					if (izhodisceY >= 0 && izhodisceY < visina){
+						// izhodisceY je na platnu
+						if (izhodisceY > visina/2) {
+							// izhodisceY je na desni polovici platna
+							for (int y=0; y <= izhodisceY; y++){
+								risiJulia0(x, y);
+							}
+						}
+						else {
+							// izhodisceY je na levi polovici platna
+							for (int y=izhodisceY; y < visina; y++) {
+								risiJulia0(x, y);
+							}
+						}
+					}
+					else {
+						// izhodisceY je zunaj platna
+						for (int y=0; y < visina; y++) {
+							risiJulia0(x, y);
+						}
+					}
+				}
+			}
+			}
+		// imaginarni del konstante je neniceln
 		else {
-			for (int x=0; x <= sirina/2; x++){
-				if (ustavi) {return;}
-				for (int y=0; y < visina; y++){
-					Color color = barvaJulia(x, y);
-					// nastavi pikslu barvo
-					getSlika().setRGB(x, y, color.getRGB());
-					getSlika().setRGB(sirina-1-x, visina-1-y, color.getRGB());
+			if (izhodisceX > 0 && izhodisceX < sirina) { 
+				if (izhodisceX > sirina/2) {
+					for (int x=0; x <= izhodisceX; x++){
+						if (ustavi) {return;}
+						for (int y=0; y < visina; y++){
+							risiJuliaI(x, y);
+						}
+					}
+				}
+				else {
+					for (int x=izhodisceX; x < sirina; x++) {
+						if (ustavi) {return;}
+						for (int y=0; y < visina; y++){
+							risiJuliaI(x, y);
+						}
+					}
+				}
+			}
+			else {
+				for (int x=0; x < sirina; x++){
+					if (ustavi) {return;}
+					for (int y=0; y < visina; y++){
+						risiJuliaI(x, y);
+					}
 				}
 			}
 		}
 		repaint();
+	}
+	
+	public void risiJulia0(int x, int y) {
+		Color color = barvaJulia(x, y);
+		// nastavi pikslu barvo
+		getSlika().setRGB(x, y, color.getRGB());
+		int z = x-2*(x-izhodisceX);
+		int w = y - 2*(y - izhodisceY);
+		if (z>=0 && z < sirina) {
+			getSlika().setRGB(z, y, color.getRGB());
+			if (w>=0 && w < visina) {
+				getSlika().setRGB(z, w, color.getRGB());
+			}
+		}
+		if (w>=0 && w < visina) {
+			getSlika().setRGB(x, w, color.getRGB());
+		}
+	}
+	
+	public void risiJuliaI(int x, int y) {
+		Color color = barvaJulia(x, y);
+		int z = x-2*(x-izhodisceX);
+		int w = y - 2*(y - izhodisceY);
+		// nastavi pikslu barvo
+		getSlika().setRGB(x, y, color.getRGB());
+		if (z>=0 && z < sirina && w>=0 && w < visina) {
+			getSlika().setRGB(z, w, color.getRGB());
+		}
 	}
 	
 	public Color barvaJulia(int x, int y){
@@ -155,57 +279,77 @@ public class Platno extends JPanel implements MouseListener{
 	
 	public void narisiMandelbrot() throws InterruptedException {
 		setSlika(new BufferedImage(sirina, visina, BufferedImage.TYPE_INT_RGB));
-		Color color = null;
-		int iteracije;
 		for (int x=0; x < sirina; x++){
 			if (ustavi) {return;}
-			for (int y=0; y <= visina/2; y++){
-				// izracuna kompleksni koordinati tocke
-				Vector<Double> koordinati = kompleksneKoordinate(x, y);
-				double a = koordinati.get(0);
-				double b = koordinati.get(1);
-				// izracuna barvo
-				maxIteration = Integer.parseInt(okno.maxIteracij.getText());
-				if (okno.izbiraBarv.getSelectedItem()==okno.getCrnoBelo1()) {
-					iteracije = steviloIteracijMandelbrot(new Complex(a, b));
-					if (iteracije >= maxIteration) {
-						color = new Color(255, 255, 255);
-					}
-					else {
-						color = new Color(0, 0, 0);
+			if (izhodisceY >= 0 && izhodisceY < sirina) {
+				if (izhodisceY > visina/2) {
+					for (int y=0; y <= izhodisceY; y++){
+						risiMandelbrot(x, y);
 					}
 				}
-				if (okno.izbiraBarv.getSelectedItem()==okno.getSivo()) {
-					iteracije = steviloIteracijMandelbrot(new Complex(a, b));
-					int barva = (int)(255-(Math.sqrt((double)iteracije/maxIteration)*255));
-					color = new Color(barva, barva, barva);
-				}
-				if (okno.izbiraBarv.getSelectedItem()==okno.getBarva1()) {
-					iteracije = steviloIteracijMandelbrot(new Complex(a, b));
-					int colorR = (int)(255-(Math.sqrt((double)iteracije/maxIteration))*255);
-					int colorG = (int)(255-((double)iteracije/maxIteration)*255);
-					int colorB = (int)(255-(((double)iteracije/maxIteration)*((double)iteracije/maxIteration))*255-20);
-					if (colorB<0){
-						colorB = 0;
-					}
-					color = new Color(colorR, colorG, colorB);
-					if (iteracije >= maxIteration){
-						color = new Color(50, 100, 100);
+				else {
+					for (int y=izhodisceY; y < sirina; y++){
+						risiMandelbrot(x, y);
 					}
 				}
-				
-				if (okno.izbiraBarv.getSelectedItem()==okno.getCrnoBelo2()) {
-					int barva = dolociBarvoMandelbrotCrnoBelo(new Complex(a, b));
-					color = new Color(barva, barva, barva);
+			}
+			else {
+				for (int y=0; y < sirina; y++){
+					risiMandelbrot(x, y);
 				}
-				// nastavi pikslu barvo
-				getSlika().setRGB(x, y, color.getRGB());
-				getSlika().setRGB(x, visina-1-y, color.getRGB());
 			}
 		}
 		repaint();
 	}
 	
+	public void risiMandelbrot(int x, int y) {
+		Color color = null;
+		int iteracije;
+		// izracuna kompleksni koordinati tocke
+		Vector<Double> koordinati = kompleksneKoordinate(x, y);
+		double a = koordinati.get(0);
+		double b = koordinati.get(1);
+		// izracuna barvo
+		maxIteration = Integer.parseInt(okno.maxIteracij.getText());
+		if (okno.izbiraBarv.getSelectedItem()==okno.getCrnoBelo1()) {
+			iteracije = steviloIteracijMandelbrot(new Complex(a, b));
+			if (iteracije >= maxIteration) {
+				color = new Color(255, 255, 255);
+			}
+			else {
+				color = new Color(0, 0, 0);
+			}
+		}
+		if (okno.izbiraBarv.getSelectedItem()==okno.getSivo()) {
+			iteracije = steviloIteracijMandelbrot(new Complex(a, b));
+			int barva = (int)(255-(Math.sqrt((double)iteracije/maxIteration)*255));
+			color = new Color(barva, barva, barva);
+		}
+		if (okno.izbiraBarv.getSelectedItem()==okno.getBarva1()) {
+			iteracije = steviloIteracijMandelbrot(new Complex(a, b));
+			int colorR = (int)(255-(Math.sqrt((double)iteracije/maxIteration))*255);
+			int colorG = (int)(255-((double)iteracije/maxIteration)*255);
+			int colorB = (int)(255-(((double)iteracije/maxIteration)*((double)iteracije/maxIteration))*255-20);
+			if (colorB<0){
+				colorB = 0;
+			}
+			color = new Color(colorR, colorG, colorB);
+			if (iteracije >= maxIteration){
+				color = new Color(50, 100, 100);
+			}
+		}
+		
+		if (okno.izbiraBarv.getSelectedItem()==okno.getCrnoBelo2()) {
+			int barva = dolociBarvoMandelbrotCrnoBelo(new Complex(a, b));
+			color = new Color(barva, barva, barva);
+		}
+		int w = y - 2*(y - izhodisceY);
+		// nastavi pikslu barvo
+		getSlika().setRGB(x, y, color.getRGB());
+		if (w>=0 && w < visina) {
+			getSlika().setRGB(x, w, color.getRGB());
+		}
+	}
 		
 	/**
 	 * pikslu doloci stevilo iteracij, ki so potrebne, da gre tocka c v neskoncnost
@@ -302,8 +446,8 @@ public class Platno extends JPanel implements MouseListener{
 	 * @return vrne kompleksni koordinati tocke
 	 */
 	public Vector<Double> kompleksneKoordinate(int x, int y){
-		double a = 4*(double)x/(sirina-1) - 2;
-		double b = 2 - 4*(double)y/(visina-1);
+		double a = (double)sirinaKR/sirina*(x - izhodisceX);
+		double b = (double)visinaKR/visina*(izhodisceY-y);
 		Vector<Double> koordinati = new Vector<Double>(2);
 		koordinati.add(a);
 		koordinati.add(b);
