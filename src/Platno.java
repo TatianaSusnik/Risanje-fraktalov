@@ -2,6 +2,7 @@
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.HeadlessException;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
@@ -23,6 +24,8 @@ public class Platno extends JPanel implements MouseListener{
 	protected Okno okno;
 	private List<DodatnoOkno> dodatnaOkna;
 	private Boolean jeMandelbrot;
+	private Thread vlakno;
+	private boolean ustavi;
 	
 	public Platno(Okno o, int sirina, int visina) {
 		super();
@@ -43,27 +46,43 @@ public class Platno extends JPanel implements MouseListener{
 	 * metoda, ki izracuna sliko
 	 * @param c konstanta v iteraciji z_{n+1} = z_{n}^2 + c
 	 */
-	public void narisi(){
+	public void narisi() throws InterruptedException {
 		if (dodatnaOkna!=null){
 		for (DodatnoOkno o: dodatnaOkna){
 			o.dispose();
 		}
 		dodatnaOkna.clear();
 		}
-		jeMandelbrot = false;
-		if (okno.izbiraFraktala.getSelectedItem()==okno.getJulia()) {
-			narisiJulia();
+		if (vlakno != null) {
+			ustavi = true;
+			vlakno.join();
 		}
-		if (okno.izbiraFraktala.getSelectedItem()==okno.getMandelbrot()) {
-			jeMandelbrot = true;
-			narisiMandelbrot();
-		}
+		vlakno = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					ustavi = false;
+					jeMandelbrot = false;
+					if (okno.izbiraFraktala.getSelectedItem()==okno.getJulia()) {
+						narisiJulia();
+					}
+					if (okno.izbiraFraktala.getSelectedItem()==okno.getMandelbrot()) {
+						jeMandelbrot = true;
+						narisiMandelbrot();
+					}
+					vlakno = null;
+				} catch (Exception e) {
+				}
+			}
+		});
+		vlakno.start();
 	}
 	
-	public void narisiJulia(){
+	public void narisiJulia() throws InterruptedException {
 		setSlika(new BufferedImage(sirina, visina, BufferedImage.TYPE_INT_RGB));
 		if ((double) Double.parseDouble(okno.imagC.getText())==0){
 			for (int x=0; x <= sirina/2; x++){
+				if (ustavi) {return;}
 				for (int y=0; y <= visina/2; y++){
 					Color color = barvaJulia(x, y);
 					// nastavi pikslu barvo
@@ -76,6 +95,7 @@ public class Platno extends JPanel implements MouseListener{
 		}
 		else {
 			for (int x=0; x <= sirina/2; x++){
+				if (ustavi) {return;}
 				for (int y=0; y < visina; y++){
 					Color color = barvaJulia(x, y);
 					// nastavi pikslu barvo
@@ -133,11 +153,12 @@ public class Platno extends JPanel implements MouseListener{
 	}
 	
 	
-	public void narisiMandelbrot(){
+	public void narisiMandelbrot() throws InterruptedException {
 		setSlika(new BufferedImage(sirina, visina, BufferedImage.TYPE_INT_RGB));
 		Color color = null;
 		int iteracije;
 		for (int x=0; x < sirina; x++){
+			if (ustavi) {return;}
 			for (int y=0; y <= visina/2; y++){
 				// izracuna kompleksni koordinati tocke
 				Vector<Double> koordinati = kompleksneKoordinate(x, y);
@@ -310,7 +331,14 @@ public class Platno extends JPanel implements MouseListener{
 			double b = koordinati.get(1);
 			a = ((double) Math.round(1000*a)/1000);
 			b = ((double) Math.round(1000*b)/1000);
-			DodatnoOkno novoOkno = new DodatnoOkno(a, b, this.okno);
+			DodatnoOkno novoOkno = null;
+			try {
+				novoOkno = new DodatnoOkno(a, b, this.okno);
+			} catch (HeadlessException e1) {
+				e1.printStackTrace();
+			} catch (InterruptedException e1) {
+				e1.printStackTrace();
+			}
 			dodatnaOkna.add(novoOkno);
 			novoOkno.pack();
 			novoOkno.setVisible(true);

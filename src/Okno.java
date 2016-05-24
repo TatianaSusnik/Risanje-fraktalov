@@ -2,7 +2,6 @@ import javax.swing.JFrame;
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.awt.event.ActionEvent;
@@ -61,7 +60,11 @@ public class Okno extends JFrame {
 		JButton btnNarisi = new JButton("Narisi");
 		btnNarisi.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				platno.narisi();
+				try {
+					platno.narisi();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
 		});
 		btnNarisi.setBounds(553, 425, 80, 25);

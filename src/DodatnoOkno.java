@@ -13,7 +13,7 @@ public class DodatnoOkno extends JFrame {
 	protected MiniPlatno platno;
 	protected double real, imag;
 
-	public DodatnoOkno(double real, double imag, Okno okno) throws HeadlessException {
+	public DodatnoOkno(double real, double imag, Okno okno) throws HeadlessException, InterruptedException {
 		super();
 		
 		this.real = real;
@@ -31,7 +31,11 @@ public class DodatnoOkno extends JFrame {
 				okno.izbiraFraktala.setSelectedItem(okno.getJulia());
 				okno.realC.setText(Double.toString(real));
 				okno.imagC.setText(Double.toString(imag));
-				okno.platno.narisi();
+				try {
+					okno.platno.narisi();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
 		});
 		btnPovecaj.setBounds(160, 255, 80, 25);;

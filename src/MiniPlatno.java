@@ -15,6 +15,8 @@ public class MiniPlatno extends JPanel {
 	private int maxIteration;
 	protected Okno okno;
 	protected DodatnoOkno dodatnoOkno;
+	private Thread vlakno;
+	private boolean ustavi;
 	
 	
 	public MiniPlatno(DodatnoOkno o, Okno oo, int sirina, int visina) {
@@ -30,11 +32,31 @@ public class MiniPlatno extends JPanel {
 		return new Dimension(sirina, visina+35);
 	}
 	
+	public void narisi(double real, double imag) throws InterruptedException {
+		if (vlakno != null) {
+			ustavi = true;
+			vlakno.join();
+		}
+		vlakno = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					ustavi = false;
+					narisiMiniJulia(real, imag);
+					vlakno = null;
+				} catch (Exception e) {
+				}
+			}
+		});
+		vlakno.start();
+	}
 	
-	public void narisiMiniJulia(double real, double imag){
+	
+	public void narisiMiniJulia(double real, double imag) throws InterruptedException {
 		slika = new BufferedImage(sirina, visina, BufferedImage.TYPE_INT_RGB);
 		if (imag==0){
 			for (int x=0; x <= sirina/2; x++){
+				if (ustavi) { return; }
 				for (int y=0; y <= visina/2; y++){
 					Color color = barvaJulia(x, y, real, imag);
 					// nastavi pikslu barvo
