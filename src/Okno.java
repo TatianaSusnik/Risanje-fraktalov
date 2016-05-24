@@ -2,6 +2,7 @@ import javax.swing.JFrame;
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.awt.event.ActionEvent;
@@ -157,9 +158,16 @@ public class Okno extends JFrame {
 		btnShrani.setBounds(645, 425, 80, 25);
 		platno.add(btnShrani);
 		
+		addWindowListener(new java.awt.event.WindowAdapter() {
+		    @Override
+		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+		            System.exit(0);
+		}
+		});
+		
 
 	}
-
+	
 
 	public String getJulia() {
 		return julia;
