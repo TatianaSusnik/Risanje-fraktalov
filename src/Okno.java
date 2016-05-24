@@ -91,6 +91,18 @@ public class Okno extends JFrame {
 		setMandelbrot("Mandelbrotova mnozica");
 		String[] fraktali = new String[] {getJulia(), getMandelbrot()};
 		izbiraFraktala = new JComboBox(fraktali);
+		izbiraFraktala.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if (izbiraFraktala.getSelectedItem()==mandelbrot) {
+					realC.setEnabled(false);
+					imagC.setEnabled(false);
+				}
+				else if (izbiraFraktala.getSelectedItem()==julia) {
+					realC.setEnabled(true);
+					imagC.setEnabled(true);
+				}
+			}
+		});
 		izbiraFraktala.setBounds(553, 80, 172, 20);
 		platno.add(izbiraFraktala);
 		
