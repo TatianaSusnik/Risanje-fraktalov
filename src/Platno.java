@@ -27,8 +27,8 @@ public class Platno extends JPanel implements MouseListener{
 	private Boolean jeMandelbrot;
 	private Thread vlakno;
 	private boolean ustavi;
-	protected int sirinaKR = 4;
-	protected int visinaKR = 4;
+	protected double sirinaKR = 4;
+	protected double visinaKR = 4;
 	protected int izhodisceX = 250;
 	protected int izhodisceY = 250;
 	protected double popravekX = 0;
