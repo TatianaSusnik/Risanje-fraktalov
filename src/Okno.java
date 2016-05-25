@@ -1,5 +1,6 @@
 import javax.swing.JFrame;
 import javax.imageio.ImageIO;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -11,6 +12,8 @@ import javax.swing.JTextField;
 import javax.swing.filechooser.FileSystemView;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
+import javax.swing.JRadioButton;
+import java.awt.BorderLayout;
 
 
 @SuppressWarnings("serial")
@@ -20,6 +23,7 @@ public class Okno extends JFrame {
 	protected JTextField realC, imagC, maxIteracij;
 	protected JComboBox<String> izbiraFraktala, izbiraBarv;
 	private String julia, mandelbrot, crnoBelo1, crnoBelo2, sivo, barva1;
+	protected JRadioButton rdbtnObKliku1, rdbtnObKliku2;
 	
 	
 	public Okno(){
@@ -61,6 +65,12 @@ public class Okno extends JFrame {
 		btnNarisi.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
+					platno.sirinaKR = 4;
+					platno.visinaKR = 4;
+					platno.izhodisceX = 250;
+					platno.izhodisceY = 250;
+					platno.popravekX = 0;
+					platno.popravekY = 0;
 					platno.narisi();
 				} catch (InterruptedException e) {
 					e.printStackTrace();
@@ -96,10 +106,15 @@ public class Okno extends JFrame {
 				if (izbiraFraktala.getSelectedItem()==mandelbrot) {
 					realC.setEnabled(false);
 					imagC.setEnabled(false);
+					rdbtnObKliku1.setEnabled(true);
+					rdbtnObKliku2.setEnabled(true);
 				}
 				else if (izbiraFraktala.getSelectedItem()==julia) {
 					realC.setEnabled(true);
 					imagC.setEnabled(true);
+					rdbtnObKliku1.setSelected(true);
+					rdbtnObKliku1.setEnabled(false);
+					rdbtnObKliku2.setEnabled(false);
 				}
 			}
 		});
@@ -172,6 +187,26 @@ public class Okno extends JFrame {
 		});
 		btnShrani.setBounds(645, 425, 80, 25);
 		platno.add(btnShrani);
+		
+		JLabel lblKlik = new JLabel("Ob kliku:");
+		lblKlik.setBounds(553, 345, 172, 20);
+		platno.add(lblKlik);
+		
+		rdbtnObKliku1 = new JRadioButton("povecaj");
+		rdbtnObKliku1.setBounds(553, 365, 172, 20);
+		platno.add(rdbtnObKliku1);
+		rdbtnObKliku1.setSelected(true);
+		
+		rdbtnObKliku2 = new JRadioButton("narisi miniJulia");
+		rdbtnObKliku2.setBounds(553, 385, 172, 20);
+		platno.add(rdbtnObKliku2);
+		
+		rdbtnObKliku1.setEnabled(false);
+		rdbtnObKliku2.setEnabled(false);
+		
+		ButtonGroup group = new ButtonGroup();
+        group.add(rdbtnObKliku1);
+        group.add(rdbtnObKliku2);
 		
 		addWindowListener(new java.awt.event.WindowAdapter() {
 		    @Override

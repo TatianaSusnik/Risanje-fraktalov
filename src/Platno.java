@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Vector;
 
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 
 
@@ -26,10 +27,12 @@ public class Platno extends JPanel implements MouseListener{
 	private Boolean jeMandelbrot;
 	private Thread vlakno;
 	private boolean ustavi;
-	private int sirinaKR = 4;
-	private int visinaKR = 4;
-	private int izhodisceX = 250;
-	private int izhodisceY = 250;
+	protected int sirinaKR = 4;
+	protected int visinaKR = 4;
+	protected int izhodisceX = 250;
+	protected int izhodisceY = 250;
+	protected double popravekX = 0;
+	protected double popravekY = 0;
 	
 	public Platno(Okno o, int sirina, int visina) {
 		super();
@@ -446,12 +449,61 @@ public class Platno extends JPanel implements MouseListener{
 	 * @return vrne kompleksni koordinati tocke
 	 */
 	public Vector<Double> kompleksneKoordinate(int x, int y){
-		double a = (double)sirinaKR/sirina*(x - izhodisceX);
-		double b = (double)visinaKR/visina*(izhodisceY-y);
+		double a = (double)sirinaKR/sirina*(x + popravekX - izhodisceX);
+		double b = (double)visinaKR/visina*(izhodisceY-y-popravekY);
 		Vector<Double> koordinati = new Vector<Double>(2);
 		koordinati.add(a);
 		koordinati.add(b);
 		return koordinati;
+	}
+	
+	public Vector<Double> izracunajIzhodisce(double x, double y) {
+		double a = 250 - (double)sirina/sirinaKR*x;
+		double b = 250 + (double)visina/visinaKR*y;
+		Vector<Double> izhodisce = new Vector<Double>(2);
+		izhodisce.add(a);
+		izhodisce.add(b);
+		return izhodisce;
+	}
+	
+	protected void povecaj(int x, int y) {
+		Vector<Double> koordinati = kompleksneKoordinate(x, y);
+		double kx = koordinati.get(0);
+		double ky = koordinati.get(1);
+		sirinaKR = sirinaKR/2;
+		visinaKR = visinaKR/2;
+		Vector<Double> izhodisce = izracunajIzhodisce(kx, ky);
+		double a = izhodisce.get(0);
+		double b = izhodisce.get(1);
+		izhodisceX = (int) Math.floor(a);
+		izhodisceY = (int) Math.floor(b);
+		popravekX = a - izhodisceX;
+		popravekY = b - izhodisceY;
+		try {
+			narisi();
+		} catch (InterruptedException e1) {
+			e1.printStackTrace();
+		}
+	}
+	
+	protected void pomanjsaj(int x, int y) {
+		Vector<Double> koordinati = kompleksneKoordinate(x, y);
+		double kx = koordinati.get(0);
+		double ky = koordinati.get(1);
+		sirinaKR = 2*sirinaKR;
+		visinaKR = 2*visinaKR;
+		Vector<Double> izhodisce = izracunajIzhodisce(kx, ky);
+		double a = izhodisce.get(0);
+		double b = izhodisce.get(1);
+		izhodisceX = (int) Math.floor(a);
+		izhodisceY = (int) Math.floor(b);
+		popravekX = a - izhodisceX;
+		popravekY = b - izhodisceY;
+		try {
+			narisi();
+		} catch (InterruptedException e1) {
+			e1.printStackTrace();
+		}
 	}
 	
 	
@@ -468,24 +520,44 @@ public class Platno extends JPanel implements MouseListener{
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		int x = e.getX();
-		if (jeMandelbrot && x < sirina) {
-			int y = e.getY();
-			Vector<Double> koordinati = kompleksneKoordinate(x, y);
-			double a = koordinati.get(0);
-			double b = koordinati.get(1);
-			a = ((double) Math.round(1000*a)/1000);
-			b = ((double) Math.round(1000*b)/1000);
-			DodatnoOkno novoOkno = null;
-			try {
-				novoOkno = new DodatnoOkno(a, b, this.okno);
-			} catch (HeadlessException e1) {
-				e1.printStackTrace();
-			} catch (InterruptedException e1) {
-				e1.printStackTrace();
+		int y = e.getY();
+		if (x < sirina) {
+			if (jeMandelbrot) {
+				if (okno.rdbtnObKliku2.isSelected()) {
+					Vector<Double> koordinati = kompleksneKoordinate(x, y);
+					double a = koordinati.get(0);
+					double b = koordinati.get(1);
+					a = ((double) Math.round(1000*a)/1000);
+					b = ((double) Math.round(1000*b)/1000);
+					DodatnoOkno novoOkno = null;
+					try {
+						novoOkno = new DodatnoOkno(a, b, this.okno);
+					} catch (HeadlessException e1) {
+						e1.printStackTrace();
+					} catch (InterruptedException e1) {
+						e1.printStackTrace();
+					}
+					dodatnaOkna.add(novoOkno);
+					novoOkno.pack();
+					novoOkno.setVisible(true);
+				}
+				else if (okno.rdbtnObKliku1.isSelected()) {
+					if(SwingUtilities.isLeftMouseButton(e)){
+						povecaj(x, y);
+					}
+					if(SwingUtilities.isRightMouseButton(e)){
+						pomanjsaj(x, y);
+					}
+				}
 			}
-			dodatnaOkna.add(novoOkno);
-			novoOkno.pack();
-			novoOkno.setVisible(true);
+			else {
+				if(SwingUtilities.isLeftMouseButton(e)){
+					povecaj(x, y);
+				}
+				if(SwingUtilities.isRightMouseButton(e)){
+					pomanjsaj(x, y);
+				}
+			}
 		}
 	}
 

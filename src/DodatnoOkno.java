@@ -32,6 +32,12 @@ public class DodatnoOkno extends JFrame {
 				okno.realC.setText(Double.toString(real));
 				okno.imagC.setText(Double.toString(imag));
 				try {
+					okno.platno.sirinaKR = 4;
+					okno.platno.visinaKR = 4;
+					okno.platno.izhodisceX = 250;
+					okno.platno.izhodisceY = 250;
+					okno.platno.popravekX = 0;
+					okno.platno.popravekY = 0;
 					okno.platno.narisi();
 				} catch (InterruptedException e) {
 					e.printStackTrace();
