@@ -69,12 +69,12 @@ public class Platno extends JPanel implements MouseListener{
 			public void run() {
 				try {
 					ustavi = false;
-					jeMandelbrot = false;
+					setJeMandelbrot(false);
 					if (okno.izbiraFraktala.getSelectedItem()==okno.getJulia()) {
 						narisiJulia();
 					}
 					if (okno.izbiraFraktala.getSelectedItem()==okno.getMandelbrot()) {
-						jeMandelbrot = true;
+						setJeMandelbrot(true);
 						narisiMandelbrot();
 					}
 					vlakno = null;
@@ -522,7 +522,7 @@ public class Platno extends JPanel implements MouseListener{
 		int x = e.getX();
 		int y = e.getY();
 		if (x < sirina) {
-			if (jeMandelbrot) {
+			if (getJeMandelbrot()) {
 				if (okno.rdbtnObKliku2.isSelected()) {
 					Vector<Double> koordinati = kompleksneKoordinate(x, y);
 					double a = koordinati.get(0);
@@ -603,6 +603,18 @@ public class Platno extends JPanel implements MouseListener{
 
 	public void setSlika(BufferedImage slika) {
 		this.slika = slika;
+	}
+
+
+
+	public Boolean getJeMandelbrot() {
+		return jeMandelbrot;
+	}
+
+
+
+	public void setJeMandelbrot(Boolean jeMandelbrot) {
+		this.jeMandelbrot = jeMandelbrot;
 	}
 
 

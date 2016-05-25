@@ -14,6 +14,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JRadioButton;
 import java.awt.BorderLayout;
+import java.awt.FileDialog;
 
 
 @SuppressWarnings("serial")
@@ -24,6 +25,7 @@ public class Okno extends JFrame {
 	protected JComboBox<String> izbiraFraktala, izbiraBarv;
 	private String julia, mandelbrot, crnoBelo1, crnoBelo2, sivo, barva1;
 	protected JRadioButton rdbtnObKliku1, rdbtnObKliku2;
+	private static JFrame frame;
 	
 	
 	public Okno(){
@@ -137,62 +139,51 @@ public class Okno extends JFrame {
 		
 		
 		// gumb za shranjevanje slike
-		JButton btnShrani = new JButton("Shrani");
-		btnShrani.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				 BufferedImage image = platno.getSlika();
-		            try{
-		            	JFrame shraniFrame = new JFrame();
-		            	JFileChooser fileChooser = new JFileChooser();
-		            	fileChooser.setDialogTitle("Shrani");
-		            	File home = FileSystemView.getFileSystemView().getHomeDirectory();
-		            	if (izbiraFraktala.getSelectedItem()==julia) {
-		            		String juliaIme = "";
-		            		if (Double.parseDouble(imagC.getText())<0) {
-		            			juliaIme = String.format("/Julia%.3f%.3fi.png", Double.parseDouble(realC.getText()), Double.parseDouble(imagC.getText()));
-		            		}
-		            		else {
-		            			juliaIme = String.format("/Julia%.3f+%.3fi.png", Double.parseDouble(realC.getText()), Double.parseDouble(imagC.getText()));
-		            		}
-		            		fileChooser.setSelectedFile(new File(home.getAbsolutePath()+juliaIme));
-			            	
-		            	}
-		            	if (izbiraFraktala.getSelectedItem()==mandelbrot) {
-		            		fileChooser.setSelectedFile(new File(home.getAbsolutePath()+"/Mandelbrot"));
-		            	}
-		            	int userSelection = fileChooser.showSaveDialog(shraniFrame);
-		            	if (userSelection == JFileChooser.APPROVE_OPTION) {
-		            		File fileToSave = fileChooser.getSelectedFile();
-		            		String[] koncnica = fileToSave.getAbsolutePath().split("\\.");
-		            		if (koncnica.length == 1) {
-		            			fileToSave =  new File(fileToSave.getAbsoluteFile()+".png");
-		            		}
-		            		if(fileToSave.exists()) {
-		            		    int odgovor = JOptionPane.showConfirmDialog(null, 
-		            		        "Datoteka s tem imenom ze obstaja. Zamenjam?", "Overwrite Prompt",  
-		            		        JOptionPane.YES_NO_OPTION);
-		            		    if (odgovor == JOptionPane.YES_OPTION) {
-		            		    	ImageIO.write(image,"png", fileToSave);
-		            		    }
-		            		}
-		            		else {
-		            			ImageIO.write(image,"png", fileToSave);
-		            		}
-		            		}
-		                }
-		            catch(Exception ex){
-		                 ex.printStackTrace();
-		                }
-			}
-		});
-		btnShrani.setBounds(645, 425, 80, 25);
-		platno.add(btnShrani);
+				JButton btnShrani1 = new JButton("Shrani");
+				btnShrani1.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent arg0) {
+						 BufferedImage image = platno.getSlika();
+				            try{
+				            	FileDialog fDialog = new FileDialog(frame,"Shrani", FileDialog.SAVE);
+				            	if (!platno.getJeMandelbrot()) {
+				            		String juliaIme = "";
+				            		if (Double.parseDouble(imagC.getText())<0) {
+				            			juliaIme = String.format("Julia%.3f%.3fi.png", Double.parseDouble(realC.getText()), Double.parseDouble(imagC.getText()));
+				            		}
+				            		else {
+				            			juliaIme = String.format("Julia%.3f+%.3fi.png", Double.parseDouble(realC.getText()), Double.parseDouble(imagC.getText()));
+				            		}
+					            	fDialog.setFile(juliaIme);
+				            	}
+				            	if (platno.getJeMandelbrot()) {
+				            		fDialog.setFile("Mandelbrot.png");
+				            	}
+				            	fDialog.setVisible(true);
+				            	String[] koncnica = fDialog.getFile().split("\\.");
+				            	String path;
+			            		if (koncnica.length == 1) {
+			            			path = fDialog.getDirectory()+fDialog.getFile()+".png";
+			            		}
+			            		else {
+			            			path = fDialog.getDirectory()+fDialog.getFile();
+			            		}
+								File f = new File(path);				   
+				            	ImageIO.write(image,"png", f);
+				            		}
+				                
+				            catch(Exception ex){
+				                 ex.printStackTrace();
+				                }
+					}
+				});
+				btnShrani1.setBounds(645, 425, 80, 25);
+				platno.add(btnShrani1);
 		
 		JLabel lblKlik = new JLabel("Ob kliku:");
 		lblKlik.setBounds(553, 345, 172, 20);
 		platno.add(lblKlik);
 		
-		rdbtnObKliku1 = new JRadioButton("povecaj");
+		rdbtnObKliku1 = new JRadioButton("povecaj / pomanjsaj");
 		rdbtnObKliku1.setBounds(553, 365, 172, 20);
 		platno.add(rdbtnObKliku1);
 		rdbtnObKliku1.setSelected(true);
