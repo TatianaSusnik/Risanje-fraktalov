@@ -2,18 +2,19 @@ import javax.swing.JFrame;
 import javax.imageio.ImageIO;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 import java.awt.event.ActionEvent;
+
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JTextField;
-import javax.swing.filechooser.FileSystemView;
 import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
 import javax.swing.JRadioButton;
-import java.awt.BorderLayout;
+
 import java.awt.FileDialog;
 
 
@@ -23,9 +24,10 @@ public class Okno extends JFrame {
 	protected Platno platno;
 	protected JTextField realC, imagC, maxIteracij;
 	protected JComboBox<String> izbiraFraktala, izbiraBarv;
-	private String julia, mandelbrot, crnoBelo1, crnoBelo2, sivo, barva1;
+	private String julia, mandelbrot, crnoBelo1, crnoBelo2, sivo, barva1, barva2;
 	protected JRadioButton rdbtnObKliku1, rdbtnObKliku2;
 	private static JFrame frame;
+	static private List<String> koncnice = Arrays.asList("png", "jpg", "jpeg", "gif", "PNG", "JPG", "JPEG", "GIF");
 	
 	
 	public Okno(){
@@ -102,7 +104,7 @@ public class Okno extends JFrame {
 		setJulia("Juliajeva mnozica");
 		setMandelbrot("Mandelbrotova mnozica");
 		String[] fraktali = new String[] {getJulia(), getMandelbrot()};
-		izbiraFraktala = new JComboBox(fraktali);
+		izbiraFraktala = new JComboBox<String>(fraktali);
 		izbiraFraktala.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if (izbiraFraktala.getSelectedItem()==mandelbrot) {
@@ -132,8 +134,9 @@ public class Okno extends JFrame {
 		setSivo("sivo");
 		setCrnoBelo2("crno-belo");
 		setBarva1("barva1");
-		String[] barvneOpcije = new String[] {getCrnoBelo1(), getSivo(), getCrnoBelo2(), getBarva1()};
-		izbiraBarv = new JComboBox(barvneOpcije);
+		setBarva2("barva2");
+		String[] barvneOpcije = new String[] {getCrnoBelo1(), getSivo(), getCrnoBelo2(), getBarva1(), getBarva2()};
+		izbiraBarv = new JComboBox<String>(barvneOpcije);
 		izbiraBarv.setBounds(553, 305, 172, 20);
 		platno.add(izbiraBarv);
 		
@@ -161,7 +164,7 @@ public class Okno extends JFrame {
 				            	fDialog.setVisible(true);
 				            	String[] koncnica = fDialog.getFile().split("\\.");
 				            	String path;
-			            		if (koncnica.length == 1) {
+				            	if (!koncnice.contains(koncnica[koncnica.length-1])){
 			            			path = fDialog.getDirectory()+fDialog.getFile()+".png";
 			            		}
 			            		else {
@@ -267,5 +270,15 @@ public class Okno extends JFrame {
 
 	public void setCrnoBelo2(String crnoBelo2) {
 		this.crnoBelo2 = crnoBelo2;
+	}
+
+
+	public String getBarva2() {
+		return barva2;
+	}
+
+
+	public void setBarva2(String barva2) {
+		this.barva2 = barva2;
 	}
 }

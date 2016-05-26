@@ -271,7 +271,10 @@ public class Platno extends JPanel implements MouseListener{
 				color = new Color(50, 100, 100);
 			}
 		}
-		
+		if (okno.izbiraBarv.getSelectedItem()==okno.getBarva2()) {
+			iteracije = steviloIteracijJulia(a, b,new Complex(real, imag));
+			color = Color.getHSBColor(iteracije % 256, 255, 255 * (iteracije ));
+		}
 		if (okno.izbiraBarv.getSelectedItem()==okno.getCrnoBelo2()) {
 			int barva = dolociBarvoJuliaCrnoBelo(a, b,new Complex(real, imag));
 			color = new Color(barva, barva, barva);
@@ -328,6 +331,7 @@ public class Platno extends JPanel implements MouseListener{
 			int barva = (int)(255-(Math.sqrt((double)iteracije/maxIteration)*255));
 			color = new Color(barva, barva, barva);
 		}
+		
 		if (okno.izbiraBarv.getSelectedItem()==okno.getBarva1()) {
 			iteracije = steviloIteracijMandelbrot(new Complex(a, b));
 			int colorR = (int)(255-(Math.sqrt((double)iteracije/maxIteration))*255);
@@ -341,6 +345,11 @@ public class Platno extends JPanel implements MouseListener{
 				color = new Color(50, 100, 100);
 			}
 		}
+		
+		if (okno.izbiraBarv.getSelectedItem()==okno.getBarva2()) {
+			iteracije = steviloIteracijMandelbrot(new Complex(a, b));
+			color = Color.getHSBColor(iteracije % 256, 255, 255 * (iteracije ));
+		}	
 		
 		if (okno.izbiraBarv.getSelectedItem()==okno.getCrnoBelo2()) {
 			int barva = dolociBarvoMandelbrotCrnoBelo(new Complex(a, b));
