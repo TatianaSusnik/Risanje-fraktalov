@@ -86,6 +86,7 @@ public class Okno extends JFrame {
 		});
 		btnNarisi.setBounds(553, 425, 80, 25);
 		platno.add(btnNarisi);
+		getRootPane().setDefaultButton(btnNarisi);
 		
 		JLabel lblMaxIteracij = new JLabel("maksimalno stevilo iteracij:");
 		lblMaxIteracij.setBounds(553, 205, 172, 20);
