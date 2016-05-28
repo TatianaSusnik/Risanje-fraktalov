@@ -74,10 +74,8 @@ public class Okno extends JFrame {
 					// gledamo obmocje [-2, 2] x [-2i, 2i]
 					platno.sirinaKR = 4;
 					platno.visinaKR = 4;
-					platno.izhodisceX = 250;
-					platno.izhodisceY = 250;
-					platno.popravekX = 0;
-					platno.popravekY = 0;
+					platno.sredisceX = 0;
+					platno.sredisceY = 0;
 					platno.narisi();
 				} catch (InterruptedException e) {
 					e.printStackTrace();

@@ -35,10 +35,8 @@ public class DodatnoOkno extends JFrame {
 					// in narise fraktal
 					okno.platno.sirinaKR = 4;
 					okno.platno.visinaKR = 4;
-					okno.platno.izhodisceX = 250;
-					okno.platno.izhodisceY = 250;
-					okno.platno.popravekX = 0;
-					okno.platno.popravekY = 0;
+					okno.platno.sredisceX = 0;
+					okno.platno.sredisceY = 0;
 					okno.platno.narisi();
 				} catch (InterruptedException e) {
 					e.printStackTrace();
