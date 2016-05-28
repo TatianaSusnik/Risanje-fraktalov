@@ -204,8 +204,8 @@ public class Okno extends JFrame {
 		// pribliza fraktal ali se odpre okno s pripadajoco Juliajevo mnozico
 		
 		// moznost za priblizevanje/oddaljevanje
-		setRdbtnObKliku1(new JRadioButton("povecaj / pomanjsaj"));
-		getRdbtnObKliku1().setBounds(553, 365, 172, 20);
+		setRdbtnObKliku1(new JRadioButton("priblizevanje / oddaljevanje"));
+		getRdbtnObKliku1().setBounds(553, 365, 192, 20);
 		platno.add(getRdbtnObKliku1());
 		getRdbtnObKliku1().setSelected(true);
 		

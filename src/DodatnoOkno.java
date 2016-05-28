@@ -11,6 +11,7 @@ public class DodatnoOkno extends JFrame {
 	
 	private MiniPlatno platno;
 	
+	
 	public DodatnoOkno(double real, double imag, Okno okno) throws HeadlessException, InterruptedException {
 		super();
 		

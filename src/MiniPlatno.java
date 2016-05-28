@@ -30,6 +30,7 @@ public class MiniPlatno extends JPanel {
 		return new Dimension(sirina, visina+35);
 	}
 	
+	
 	/**
 	 * sprozi risanje v vzporednem vlaknu,
 	 * ce risanje ze poteka, se trenutno risanje ustavi in zacne novo
@@ -39,6 +40,7 @@ public class MiniPlatno extends JPanel {
 	 */
 	public void narisi(double real, double imag) throws InterruptedException {
 		if (vlakno != null) {
+			// ce je vlakno aktivno, ga ustavi
 			ustavi = true;
 			vlakno.join();
 		}
@@ -68,11 +70,12 @@ public class MiniPlatno extends JPanel {
 	public void narisiMiniJulia(double real, double imag) throws InterruptedException {
 		slika = new BufferedImage(sirina, visina, BufferedImage.TYPE_INT_RGB);
 		if (imag==0){
+			// imaginarna komponenta stevila c je nic, zato je dovolj izracunati le cetrtino slike
 			for (int x=0; x <= sirina/2; x++){
 				if (ustavi) { return; }
 				for (int y=0; y <= visina/2; y++){
 					Color color = barvaJulia(x, y, real, imag);
-					// nastavi pikslu barvo
+					// nastavi pikslom barvo
 					slika.setRGB(x, y, color.getRGB());
 					slika.setRGB(sirina-1-x, y, color.getRGB());
 					slika.setRGB(x, visina-1-y, color.getRGB());
@@ -81,6 +84,7 @@ public class MiniPlatno extends JPanel {
 			}
 		}
 		else {
+			// imaginarna komponenta stevila c ni nic, dovolj je izracunati polovico slike
 			for (int x=0; x <= sirina/2; x++){
 				for (int y=0; y < visina; y++){
 					Color color = barvaJulia(x, y, real, imag);
@@ -109,8 +113,8 @@ public class MiniPlatno extends JPanel {
 		Vector<Double> koordinati = kompleksneKoordinate(x, y);
 		double a = koordinati.get(0);
 		double b = koordinati.get(1);
-		// izracuna barvo
 		maxIteration = Integer.parseInt(okno.maxIteracij.getText());
+		// izracuna barvo
 		if (okno.getIzbiraBarv().getSelectedItem()==okno.getCrnoBelo1()) {
 			iteracije = steviloIteracijJulia(a, b, new Complex(real, imag));
 			if (iteracije >= maxIteration) {

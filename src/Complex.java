@@ -10,6 +10,7 @@ public class Complex extends Object {
 
     private double x,y;
     
+    
     /**
         Constructs the complex number z = u + i*v
         @param u Real part
@@ -20,6 +21,7 @@ public class Complex extends Object {
         y=v;
     }
     
+    
     /**
         Real part of this Complex number 
         (the x-coordinate in rectangular coordinates).
@@ -29,6 +31,7 @@ public class Complex extends Object {
         return x;
     }
     
+    
     /**
         Imaginary part of this Complex number 
         (the y-coordinate in rectangular coordinates).
@@ -37,6 +40,7 @@ public class Complex extends Object {
     public double imag() {
         return y;
     }
+    
     
     /**
         Modulus of this Complex number
@@ -52,7 +56,6 @@ public class Complex extends Object {
     }
     
    
-    
     /**
         Addition of Complex numbers (doesn't change this Complex number).
         <br>(x+i*y) + (s+i*t) = (x+s)+i*(y+t).
@@ -92,7 +95,6 @@ public class Complex extends Object {
             return y+"i";
         }
         // shouldn't get here (unless Inf or NaN)
-        return x+" + i*"+y;
-        
+        return x+" + i*"+y;       
     }       
 }

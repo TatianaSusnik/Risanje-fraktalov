@@ -18,21 +18,17 @@ import javax.swing.SwingUtilities;
 @SuppressWarnings("serial")
 public class Platno extends JPanel implements MouseListener{
 	
-	private int sirina;
-	private int visina;
+	private int sirina, visina, maxIteration;
 	private BufferedImage slika;
-	private int maxIteration;
-	protected Okno okno;
+	private Okno okno;
 	private List<DodatnoOkno> dodatnaOkna;
 	private Boolean jeMandelbrot;
 	private Thread vlakno;
 	private boolean ustavi;
-	protected double sirinaKR = 4;
-	protected double visinaKR = 4;
-	protected int izhodisceX = 250;
-	protected int izhodisceY = 250;
-	protected double popravekX = 0;
-	protected double popravekY = 0;
+	protected double sirinaKR = 4, visinaKR = 4;
+	protected int izhodisceX = 250, izhodisceY = 250;
+	protected double popravekX = 0, popravekY = 0;
+	
 	
 	public Platno(Okno o, int sirina, int visina) {
 		super();
@@ -43,24 +39,28 @@ public class Platno extends JPanel implements MouseListener{
 		dodatnaOkna = new ArrayList<DodatnoOkno>();
 	}
 	
-	
-	
+
 	public Dimension getPreferredSize(){
 		return new Dimension(sirina*3/2, visina);
-	}
+	}	
 	
+
 	/**
-	 * metoda, ki izracuna sliko
-	 * @param c konstanta v iteraciji z_{n+1} = z_{n}^2 + c
+	 * zapre vsa mini okna in
+	 * sprozi risanje v vzporednem vlaknu,
+	 * ce risanje ze poteka, se trenutno risanje ustavi in zacne novo
+	 * @throws InterruptedException
 	 */
 	public void narisi() throws InterruptedException {
 		if (dodatnaOkna!=null){
-		for (DodatnoOkno o: dodatnaOkna){
-			o.dispose();
+			// zapre vsa mini okna
+			for (DodatnoOkno o: dodatnaOkna){
+				o.dispose();
 		}
 		dodatnaOkna.clear();
 		}
 		if (vlakno != null) {
+			// ce je vlakno aktivno, ga ustavi
 			ustavi = true;
 			vlakno.join();
 		}
@@ -84,6 +84,7 @@ public class Platno extends JPanel implements MouseListener{
 		});
 		vlakno.start();
 	}
+	
 	
 	public void narisiJulia() throws InterruptedException {
 		setSlika(new BufferedImage(sirina, visina, BufferedImage.TYPE_INT_RGB));
@@ -206,6 +207,7 @@ public class Platno extends JPanel implements MouseListener{
 		repaint();
 	}
 	
+	
 	public void risiJulia0(int x, int y) {
 		Color color = barvaJulia(x, y);
 		// nastavi pikslu barvo
@@ -223,6 +225,7 @@ public class Platno extends JPanel implements MouseListener{
 		}
 	}
 	
+	
 	public void risiJuliaI(int x, int y) {
 		Color color = barvaJulia(x, y);
 		int z = x-2*(x-izhodisceX);
@@ -234,17 +237,26 @@ public class Platno extends JPanel implements MouseListener{
 		}
 	}
 	
+	
+	/**
+	 * funkcija, ki vsaki tocki doloci barvo
+	 * @param x - prva koordinata tocke
+	 * @param y - druga koordinata tocke
+	 * @return barva tocke
+	 */
 	public Color barvaJulia(int x, int y){
 		Color color = null;
 		int iteracije=0;
+		// izracuna kompleksni koordinati tocke
 		Vector<Double> koordinati = kompleksneKoordinate(x, y);
 		double a = koordinati.get(0);
 		double b = koordinati.get(1);
-		// izracuna barvo
+		// prebere konstanto c
 		double real = (double) Double.parseDouble(okno.realC.getText());
 		double imag = (double) Double.parseDouble(okno.imagC.getText());
 		maxIteration = Integer.parseInt(okno.maxIteracij.getText());
-		if (okno.izbiraBarv.getSelectedItem()==okno.getCrnoBelo1()) {
+		// izracuna barvo
+		if (okno.getIzbiraBarv().getSelectedItem()==okno.getCrnoBelo1()) {
 			iteracije = steviloIteracijJulia(a, b, new Complex(real, imag));
 			if (iteracije >= maxIteration) {
 				color = new Color(255, 255, 255);
@@ -253,12 +265,12 @@ public class Platno extends JPanel implements MouseListener{
 				color = new Color(0, 0, 0);
 			}
 		}
-		if (okno.izbiraBarv.getSelectedItem()==okno.getSivo()) {
+		if (okno.getIzbiraBarv().getSelectedItem()==okno.getSivo()) {
 			iteracije = steviloIteracijJulia(a, b, new Complex(real, imag));
 			int barva = (int)(255-(Math.sqrt((double)iteracije/maxIteration)*255));
 			color = new Color(barva, barva, barva);
 		}
-		if (okno.izbiraBarv.getSelectedItem()==okno.getBarva1()) {
+		if (okno.getIzbiraBarv().getSelectedItem()==okno.getBarva1()) {
 			iteracije = steviloIteracijJulia(a, b,new Complex(real, imag));
 			int colorR = (int)(255-(Math.sqrt((double)iteracije/maxIteration))*255);
 			int colorG = (int)(255-((double)iteracije/maxIteration)*255);
@@ -271,11 +283,11 @@ public class Platno extends JPanel implements MouseListener{
 				color = new Color(50, 100, 100);
 			}
 		}
-		if (okno.izbiraBarv.getSelectedItem()==okno.getBarva2()) {
+		if (okno.getIzbiraBarv().getSelectedItem()==okno.getBarva2()) {
 			iteracije = steviloIteracijJulia(a, b,new Complex(real, imag));
 			color = Color.getHSBColor(iteracije % 256, 255, 255 * (iteracije ));
 		}
-		if (okno.izbiraBarv.getSelectedItem()==okno.getCrnoBelo2()) {
+		if (okno.getIzbiraBarv().getSelectedItem()==okno.getCrnoBelo2()) {
 			int barva = dolociBarvoJuliaCrnoBelo(a, b,new Complex(real, imag));
 			color = new Color(barva, barva, barva);
 		}
@@ -308,6 +320,7 @@ public class Platno extends JPanel implements MouseListener{
 		repaint();
 	}
 	
+	
 	public void risiMandelbrot(int x, int y) {
 		Color color = null;
 		int iteracije;
@@ -315,9 +328,9 @@ public class Platno extends JPanel implements MouseListener{
 		Vector<Double> koordinati = kompleksneKoordinate(x, y);
 		double a = koordinati.get(0);
 		double b = koordinati.get(1);
-		// izracuna barvo
 		maxIteration = Integer.parseInt(okno.maxIteracij.getText());
-		if (okno.izbiraBarv.getSelectedItem()==okno.getCrnoBelo1()) {
+		// izracuna barvo
+		if (okno.getIzbiraBarv().getSelectedItem()==okno.getCrnoBelo1()) {
 			iteracije = steviloIteracijMandelbrot(new Complex(a, b));
 			if (iteracije >= maxIteration) {
 				color = new Color(255, 255, 255);
@@ -326,13 +339,13 @@ public class Platno extends JPanel implements MouseListener{
 				color = new Color(0, 0, 0);
 			}
 		}
-		if (okno.izbiraBarv.getSelectedItem()==okno.getSivo()) {
+		if (okno.getIzbiraBarv().getSelectedItem()==okno.getSivo()) {
 			iteracije = steviloIteracijMandelbrot(new Complex(a, b));
 			int barva = (int)(255-(Math.sqrt((double)iteracije/maxIteration)*255));
 			color = new Color(barva, barva, barva);
 		}
 		
-		if (okno.izbiraBarv.getSelectedItem()==okno.getBarva1()) {
+		if (okno.getIzbiraBarv().getSelectedItem()==okno.getBarva1()) {
 			iteracije = steviloIteracijMandelbrot(new Complex(a, b));
 			int colorR = (int)(255-(Math.sqrt((double)iteracije/maxIteration))*255);
 			int colorG = (int)(255-((double)iteracije/maxIteration)*255);
@@ -346,25 +359,27 @@ public class Platno extends JPanel implements MouseListener{
 			}
 		}
 		
-		if (okno.izbiraBarv.getSelectedItem()==okno.getBarva2()) {
+		if (okno.getIzbiraBarv().getSelectedItem()==okno.getBarva2()) {
 			iteracije = steviloIteracijMandelbrot(new Complex(a, b));
-			color = Color.getHSBColor(iteracije % 256, 255, 255 * (iteracije ));
+			color = Color.getHSBColor(iteracije % 256, 255, 255 * (iteracije));
 		}	
 		
-		if (okno.izbiraBarv.getSelectedItem()==okno.getCrnoBelo2()) {
+		if (okno.getIzbiraBarv().getSelectedItem()==okno.getCrnoBelo2()) {
 			int barva = dolociBarvoMandelbrotCrnoBelo(new Complex(a, b));
 			color = new Color(barva, barva, barva);
 		}
 		int w = y - 2*(y - izhodisceY);
-		// nastavi pikslu barvo
+		// nastavi pikslom barvo
 		getSlika().setRGB(x, y, color.getRGB());
 		if (w>=0 && w < visina) {
 			getSlika().setRGB(x, w, color.getRGB());
 		}
 	}
 		
+	
 	/**
-	 * pikslu doloci stevilo iteracij, ki so potrebne, da gre tocka c v neskoncnost
+	 * pikslu doloci stevilo iteracij, ki so potrebne, da je |z| > 10 (bo slo neskoncnost),
+	 * oz. vrne maxIteration, ce tocka ne divergira
 	 * @param a prva kompleksna koordinata tocke
 	 * @param b druga kompleksna koordinata tocke
 	 * @param c konstanta v iteraciji z_{n+1} = z_{n}^2 + c
@@ -385,6 +400,14 @@ public class Platno extends JPanel implements MouseListener{
 	}
 	
 	
+	/**
+	 * fukcija, ki doloci barvo tocke v Juliajevi mnozici na podlagi predznaka imaginarne komponente
+	 * stevila z na koncu iteriranja
+	 * @param a prva kompleksna koordinata tocke
+	 * @param b druga kompleksna koordinata tocke
+	 * @param c konstanta v iteraciji z_{n+1} = z_{n}^2 + c
+	 * @return barva tocke
+	 */
 	public int dolociBarvoJuliaCrnoBelo(double a, double b, Complex c){
 		Complex z = new Complex(a, b);
 		int color;
@@ -410,7 +433,8 @@ public class Platno extends JPanel implements MouseListener{
 
 	/**
 	 * pikslu doloci stevilo iteracij, ki so potrebne, 
-	 * da gre tocka (0,0) pri konstanti c v neskoncnost
+	 * da je |z| > 10 (bo slo neskoncnost) pri zacetni tocki (0,0) in konstanti c,
+	 * oz. vrne maxIteration, ce tocka ne divergira
 	 * @param c tocka v kompleksni ravnini = konstanta v iteraciji z_{n+1} = z_{n}^2 + c
 	 * @return stevilo iteracij
 	 */
@@ -418,7 +442,7 @@ public class Platno extends JPanel implements MouseListener{
 		Complex z = new Complex(0, 0);
 		maxIteration = Integer.parseInt(okno.maxIteracij.getText());
 		for (int j=0; j <= maxIteration; j++){
-			if (z.mod() > 10) {
+			if (z.mod() > 2) {
 				return j;
 			}
 			else {
@@ -429,6 +453,12 @@ public class Platno extends JPanel implements MouseListener{
 	}
 	
 	
+	/**
+	 * fukcija, ki doloci barvo tocke v Mandelbrotovi mnozici na podlagi predznaka imaginarne komponente
+	 * stevila z na koncu iteriranja pri zacetni tocki (0, 0)
+	 * @param c konstanta v iteraciji z_{n+1} = z_{n}^2 + c
+	 * @return barva tocke
+	 */
 	public int dolociBarvoMandelbrotCrnoBelo(Complex c){
 		Complex z = new Complex(0, 0);
 		int color;
@@ -452,7 +482,7 @@ public class Platno extends JPanel implements MouseListener{
 	
 		
 	/**
-	 * obmocje platna sirina*visina spremeni v obmocje [-2,2]x[-2i, 2i]
+	 * obmocje platna sirina*visina spremeni v izbrano obmocje v kompleksni ravnini
 	 * @param x prva koordinata tocke v platnu
 	 * @param y druga koordinata tocke v platnu
 	 * @return vrne kompleksni koordinati tocke
@@ -466,6 +496,7 @@ public class Platno extends JPanel implements MouseListener{
 		return koordinati;
 	}
 	
+	
 	public Vector<Double> izracunajIzhodisce(double x, double y) {
 		double a = 250 - (double)sirina/sirinaKR*x;
 		double b = 250 + (double)visina/visinaKR*y;
@@ -475,6 +506,13 @@ public class Platno extends JPanel implements MouseListener{
 		return izhodisce;
 	}
 	
+	
+	/**
+	 * funkcija, ki sprozi risanje fraktala na obmocju polovicne sirine in visine ter
+	 * s srediscem v tocki, kamor je uporabnik kliknil
+	 * @param x - prva koordinata tocke, kamor je uporabnik kliknil
+	 * @param y - druga koordinata tocke, kamor je uporabnik kliknil
+	 */
 	protected void povecaj(int x, int y) {
 		Vector<Double> koordinati = kompleksneKoordinate(x, y);
 		double kx = koordinati.get(0);
@@ -495,6 +533,13 @@ public class Platno extends JPanel implements MouseListener{
 		}
 	}
 	
+	
+	/**
+	 * funkcija, ki sprozi risanje fraktala na obmocju dvojne sirine in visine ter
+	 * s srediscem v tocki, kamor je uporabnik kliknil
+	 * @param x - prva koordinata tocke, kamor je uporabnik kliknil
+	 * @param y - druga koordinata tocke, kamor je uporabnik kliknil
+	 */
 	protected void pomanjsaj(int x, int y) {
 		Vector<Double> koordinati = kompleksneKoordinate(x, y);
 		double kx = koordinati.get(0);
@@ -525,14 +570,22 @@ public class Platno extends JPanel implements MouseListener{
 	}
 
 
-
+	/* (non-Javadoc)
+	 * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
+	 * ob kliku se bodisi slika pribliza (levi klik) ali oddalji (desni klik) bodisi se izrise
+	 * miniJulia na mini oknu
+	 */
 	@Override
 	public void mouseClicked(MouseEvent e) {
+		// koordinati tocke klika
 		int x = e.getX();
 		int y = e.getY();
 		if (x < sirina) {
 			if (getJeMandelbrot()) {
-				if (okno.rdbtnObKliku2.isSelected()) {
+				// ce je narisan Mandelbrot imamo dve moznosti
+				if (okno.getRdbtnObKliku2().isSelected()) {
+					// na mini okno se izrisi miniJulia
+					// izracuna kompleksni koordinati klikane tocke
 					Vector<Double> koordinati = kompleksneKoordinate(x, y);
 					double a = koordinati.get(0);
 					double b = koordinati.get(1);
@@ -540,6 +593,7 @@ public class Platno extends JPanel implements MouseListener{
 					b = ((double) Math.round(1000*b)/1000);
 					DodatnoOkno novoOkno = null;
 					try {
+						// odpre mini okno
 						novoOkno = new DodatnoOkno(a, b, this.okno);
 					} catch (HeadlessException e1) {
 						e1.printStackTrace();
@@ -550,7 +604,8 @@ public class Platno extends JPanel implements MouseListener{
 					novoOkno.pack();
 					novoOkno.setVisible(true);
 				}
-				else if (okno.rdbtnObKliku1.isSelected()) {
+				else if (okno.getRdbtnObKliku1().isSelected()) {
+					// slika se pribliza/oddalji
 					if(SwingUtilities.isLeftMouseButton(e)){
 						povecaj(x, y);
 					}
@@ -560,6 +615,7 @@ public class Platno extends JPanel implements MouseListener{
 				}
 			}
 			else {
+				// ce je narisan Julia se slika ob kliku pribliza/oddalji
 				if(SwingUtilities.isLeftMouseButton(e)){
 					povecaj(x, y);
 				}
@@ -571,13 +627,11 @@ public class Platno extends JPanel implements MouseListener{
 	}
 
 
-
 	@Override
 	public void mouseEntered(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
 	}
-
 
 
 	@Override
@@ -587,13 +641,11 @@ public class Platno extends JPanel implements MouseListener{
 	}
 
 
-
 	@Override
 	public void mousePressed(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
 	}
-
 
 
 	@Override
@@ -603,11 +655,9 @@ public class Platno extends JPanel implements MouseListener{
 	}
 
 
-
 	public BufferedImage getSlika() {
 		return slika;
 	}
-
 
 
 	public void setSlika(BufferedImage slika) {
@@ -615,19 +665,13 @@ public class Platno extends JPanel implements MouseListener{
 	}
 
 
-
 	public Boolean getJeMandelbrot() {
 		return jeMandelbrot;
 	}
 
 
-
 	public void setJeMandelbrot(Boolean jeMandelbrot) {
 		this.jeMandelbrot = jeMandelbrot;
 	}
-
-
-
-
 
 }
