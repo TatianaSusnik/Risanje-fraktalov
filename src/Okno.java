@@ -25,7 +25,7 @@ public class Okno extends JFrame {
 	protected JTextField realC, imagC, maxIteracij;
 	protected JComboBox<String> izbiraFraktala; 
 	private JComboBox<String> izbiraBarv;
-	private String julia, mandelbrot, crnoBelo1, crnoBelo2, sivo, barva1, barva2;
+	private String julia, mandelbrot, crnoBelo1, crnoBelo2, sivo, barva1, barva2, barva3, barva4;
 	private JRadioButton rdbtnObKliku1, rdbtnObKliku2;
 	private static JFrame frame;
 	static private List<String> koncnice = Arrays.asList("png", "jpg", "jpeg", "gif", "PNG", "JPG", "JPEG", "GIF");
@@ -138,10 +138,12 @@ public class Okno extends JFrame {
 		// izbira barve opcije
 		setCrnoBelo1("navadno crno-belo");
 		setSivo("sivo");
-		setCrnoBelo2("crno-belo");
-		setBarva1("barva1");
-		setBarva2("barva2");
-		String[] barvneOpcije = new String[] {getCrnoBelo1(), getSivo(), getCrnoBelo2(), getBarva1(), getBarva2()};
+		setCrnoBelo2("crno-belo 2");
+		setBarva1("barva 1");
+		setBarva2("barva 2");
+		setBarva3("barva 3");
+		setBarva4("barva 4");
+		String[] barvneOpcije = new String[] {getCrnoBelo1(), getSivo(),getBarva1(), getBarva2(), getBarva3(), getBarva4(), getCrnoBelo2()};
 		setIzbiraBarv(new JComboBox<String>(barvneOpcije));
 		getIzbiraBarv().setBounds(553, 305, 172, 20);
 		platno.add(getIzbiraBarv());
@@ -253,55 +255,6 @@ public class Okno extends JFrame {
 	}
 
 
-	public String getCrnoBelo1() {
-		return crnoBelo1;
-	}
-
-
-	public void setCrnoBelo1(String crnoBelo1) {
-		this.crnoBelo1 = crnoBelo1;
-	}
-
-
-	public String getSivo() {
-		return sivo;
-	}
-
-
-	public void setSivo(String sivo) {
-		this.sivo = sivo;
-	}
-
-
-	public String getBarva1() {
-		return barva1;
-	}
-
-
-	public void setBarva1(String barva1) {
-		this.barva1 = barva1;
-	}
-
-
-	public String getCrnoBelo2() {
-		return crnoBelo2;
-	}
-
-
-	public void setCrnoBelo2(String crnoBelo2) {
-		this.crnoBelo2 = crnoBelo2;
-	}
-
-
-	public String getBarva2() {
-		return barva2;
-	}
-
-
-	public void setBarva2(String barva2) {
-		this.barva2 = barva2;
-	}
-
 
 	public JComboBox<String> getIzbiraBarv() {
 		return izbiraBarv;
@@ -331,4 +284,77 @@ public class Okno extends JFrame {
 	public void setRdbtnObKliku1(JRadioButton rdbtnObKliku1) {
 		this.rdbtnObKliku1 = rdbtnObKliku1;
 	}
+
+
+	public String getCrnoBelo1() {
+		return crnoBelo1;
+	}
+
+
+	public void setCrnoBelo1(String crnoBelo1) {
+		this.crnoBelo1 = crnoBelo1;
+	}
+
+
+	public String getSivo() {
+		return sivo;
+	}
+
+
+	public void setSivo(String sivo) {
+		this.sivo = sivo;
+	}
+
+
+	public String getCrnoBelo2() {
+		return crnoBelo2;
+	}
+
+
+	public void setCrnoBelo2(String crnoBelo2) {
+		this.crnoBelo2 = crnoBelo2;
+	}
+	
+
+	public String getBarva1() {
+		return barva1;
+	}
+
+
+	public void setBarva1(String barva1) {
+		this.barva1 = barva1;
+	}
+
+
+	public String getBarva2() {
+		return barva2;
+	}
+
+
+	public void setBarva2(String barva2) {
+		this.barva2 = barva2;
+	}
+
+
+	public String getBarva3() {
+		return barva3;
+	}
+
+
+	public void setBarva3(String barva3) {
+		this.barva3 = barva3;
+	}
+
+
+	public String getBarva4() {
+		return barva4;
+	}
+
+
+	public void setBarva4(String barva4) {
+		this.barva4 = barva4;
+	}
+
+
+
 }

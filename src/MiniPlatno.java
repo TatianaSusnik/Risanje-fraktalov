@@ -124,32 +124,46 @@ public class MiniPlatno extends JPanel {
 				color = new Color(0, 0, 0);
 			}
 		}
+		
 		if (okno.getIzbiraBarv().getSelectedItem()==okno.getSivo()) {
-			iteracije = steviloIteracijJulia(a, b, new Complex(real, imag));
-			int barva = (int)(255-(Math.sqrt((double)iteracije/maxIteration)*255));
-			color = new Color(barva, barva, barva);
+			double nsmooth = smoothIteracijeJulia(a, b,new Complex(real, imag));
+			color = Color.getHSBColor(0, 0, (float) Math.sqrt(nsmooth/maxIteration));
 		}
-		if (okno.getIzbiraBarv().getSelectedItem()==okno.getBarva1()) {
-			iteracije = steviloIteracijJulia(a, b,new Complex(real, imag));
-			int colorR = (int)(255-(Math.sqrt((double)iteracije/maxIteration))*255);
-			int colorG = (int)(255-((double)iteracije/maxIteration)*255);
-			int colorB = (int)(255-(((double)iteracije/maxIteration)*((double)iteracije/maxIteration))*255-20);
-			if (colorB<0){
-				colorB = 0;
-			}
-			color = new Color(colorR, colorG, colorB);
-			if (iteracije >= maxIteration){
-				color = new Color(50, 100, 100);
-			}
-		}
-		if (okno.getIzbiraBarv().getSelectedItem()==okno.getBarva2()) {
-			iteracije = steviloIteracijJulia(a, b,new Complex(real, imag));
-			color = Color.getHSBColor(iteracije % 256, 255, 255 * (iteracije));
-		}
+
 		if (okno.getIzbiraBarv().getSelectedItem()==okno.getCrnoBelo2()) {
 			int barva = dolociBarvoJuliaCrnoBelo(a, b,new Complex(real, imag));
 			color = new Color(barva, barva, barva);
 		}
+		
+		if (okno.getIzbiraBarv().getSelectedItem()==okno.getBarva1()) {
+			double nsmooth = smoothIteracijeJulia(a, b,new Complex(real, imag));
+			int colorIndex = (int) (nsmooth/maxIteration*768);
+			if (colorIndex >= 768 || colorIndex < 0) {
+				colorIndex = 0;
+			}
+			color = okno.platno.getColors().get(colorIndex);
+		}
+		
+		if (okno.getIzbiraBarv().getSelectedItem()==okno.getBarva2()) {
+			double nsmooth = smoothIteracijeJulia(a, b,new Complex(real, imag));
+			if (nsmooth == maxIteration) {
+				color = Color.getHSBColor(0, 1, 0);
+			}
+			else {
+				color = Color.getHSBColor((float) (2.0*nsmooth/maxIteration), 1.0f, 1.0f);
+			}
+		}
+		
+		if (okno.getIzbiraBarv().getSelectedItem()==okno.getBarva3()) {
+			iteracije = steviloIteracijJulia(a, b,new Complex(real, imag));
+			color = Color.getHSBColor(iteracije % 256, 255, 255 * (iteracije ));
+		}
+
+		if (okno.getIzbiraBarv().getSelectedItem()==okno.getBarva4()) {
+			double nsmooth = smoothIteracijeJulia(a, b,new Complex(real, imag));
+			color = Color.getHSBColor((float) ((nsmooth/maxIteration) % 256), 0.9f,(float) (255 * nsmooth/maxIteration));
+		}
+		
 		return color;
 	}
 	
@@ -168,6 +182,33 @@ public class MiniPlatno extends JPanel {
 		for (int j=0; j <= maxIteration; j++){
 			if (z.mod() > 10) {
 				return j;
+			}
+			else {
+				z = (z.times(z)).plus(c);
+			}
+		}
+		return maxIteration;
+	}
+	
+	
+	/**
+	 * pikslu doloci stevilo odvisno od iteracij, ki so potrebne, da je |z| > 10 (bo slo neskoncnost),
+	 * oz. vrne maxIteration, ce tocka ne divergira
+	 * @param a prva kompleksna koordinata tocke
+	 * @param b druga kompleksna koordinata tocke
+	 * @param c konstanta v iteraciji z_{n+1} = z_{n}^2 + c
+	 * @return stevilo odvisno od iteracij (lepse prelivanje barv)
+	 */
+	public double smoothIteracijeJulia(double a, double b, Complex c) {
+		Complex z = new Complex(a, b);
+		maxIteration = Integer.parseInt(okno.maxIteracij.getText());
+		for (int j=0; j <= maxIteration; j++){
+			if (z.mod() > 10) {
+				for (int i=0; i<3; i++) {
+					z = (z.times(z)).plus(c);
+					j++;
+				}
+				return j+1-Math.log(Math.log(z.mod()))/Math.log(10);
 			}
 			else {
 				z = (z.times(z)).plus(c);

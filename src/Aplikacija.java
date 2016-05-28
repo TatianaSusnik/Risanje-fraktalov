@@ -6,6 +6,7 @@ public class Aplikacija {
 		Okno okno = new Okno();
 		okno.pack();
 		okno.setVisible(true);
+		okno.setResizable(false);
 		okno.platno.narisi();
 	}
 
