@@ -13,18 +13,16 @@ public class MiniPlatno extends JPanel {
 	private int visina;
 	private BufferedImage slika;
 	private int maxIteration;
-	protected Okno okno;
-	protected DodatnoOkno dodatnoOkno;
+	private Okno okno;
 	private Thread vlakno;
 	private boolean ustavi;
 	
 	
-	public MiniPlatno(DodatnoOkno o, Okno oo, int sirina, int visina) {
+	public MiniPlatno(Okno o, int sirina, int visina) {
 		super();
 		this.sirina = sirina;
 		this.visina = visina;
-		dodatnoOkno = o;
-		okno = oo;
+		okno = o;
 	}
 	
 	
@@ -32,6 +30,13 @@ public class MiniPlatno extends JPanel {
 		return new Dimension(sirina, visina+35);
 	}
 	
+	/**
+	 * sprozi risanje v vzporednem vlaknu,
+	 * ce risanje ze poteka, se trenutno risanje ustavi in zacne novo
+	 * @param real - realna komponenta konstante c
+	 * @param imag - imaginarna komponenta konstante c
+	 * @throws InterruptedException
+	 */
 	public void narisi(double real, double imag) throws InterruptedException {
 		if (vlakno != null) {
 			ustavi = true;
@@ -52,6 +57,14 @@ public class MiniPlatno extends JPanel {
 	}
 	
 	
+	/**
+	 * funkcija, ki izracuna sliko in pri tem uposteva simetrije:
+	 * ce je imaginarni del konstante c nic, je slika simetricna glede na obe koordinatni osi,
+	 * sicer pa je simetricna preko koordinatnega izhodisca
+	 * @param real - realna komponenta konstante c
+	 * @param imag - imaginarna komponenta konstante c
+	 * @throws InterruptedException
+	 */
 	public void narisiMiniJulia(double real, double imag) throws InterruptedException {
 		slika = new BufferedImage(sirina, visina, BufferedImage.TYPE_INT_RGB);
 		if (imag==0){
@@ -81,6 +94,14 @@ public class MiniPlatno extends JPanel {
 	}
 	
 	
+	/**
+	 * funkcija, ki vsaki tocki doloci barvo
+	 * @param x - prva koordinata tocke
+	 * @param y - druga koordinata tocke
+	 * @param real - realna komponenta konstante c
+	 * @param imag - imaginarna komponenta konstante c
+	 * @return barva tocke
+	 */
 	public Color barvaJulia(int x, int y, double real, double imag) {
 		Color color = null;
 		int iteracije=0;
@@ -90,7 +111,7 @@ public class MiniPlatno extends JPanel {
 		double b = koordinati.get(1);
 		// izracuna barvo
 		maxIteration = Integer.parseInt(okno.maxIteracij.getText());
-		if (okno.izbiraBarv.getSelectedItem()==okno.getCrnoBelo1()) {
+		if (okno.getIzbiraBarv().getSelectedItem()==okno.getCrnoBelo1()) {
 			iteracije = steviloIteracijJulia(a, b, new Complex(real, imag));
 			if (iteracije >= maxIteration) {
 				color = new Color(255, 255, 255);
@@ -99,12 +120,12 @@ public class MiniPlatno extends JPanel {
 				color = new Color(0, 0, 0);
 			}
 		}
-		if (okno.izbiraBarv.getSelectedItem()==okno.getSivo()) {
+		if (okno.getIzbiraBarv().getSelectedItem()==okno.getSivo()) {
 			iteracije = steviloIteracijJulia(a, b, new Complex(real, imag));
 			int barva = (int)(255-(Math.sqrt((double)iteracije/maxIteration)*255));
 			color = new Color(barva, barva, barva);
 		}
-		if (okno.izbiraBarv.getSelectedItem()==okno.getBarva1()) {
+		if (okno.getIzbiraBarv().getSelectedItem()==okno.getBarva1()) {
 			iteracije = steviloIteracijJulia(a, b,new Complex(real, imag));
 			int colorR = (int)(255-(Math.sqrt((double)iteracije/maxIteration))*255);
 			int colorG = (int)(255-((double)iteracije/maxIteration)*255);
@@ -117,8 +138,11 @@ public class MiniPlatno extends JPanel {
 				color = new Color(50, 100, 100);
 			}
 		}
-		
-		if (okno.izbiraBarv.getSelectedItem()==okno.getCrnoBelo2()) {
+		if (okno.getIzbiraBarv().getSelectedItem()==okno.getBarva2()) {
+			iteracije = steviloIteracijJulia(a, b,new Complex(real, imag));
+			color = Color.getHSBColor(iteracije % 256, 255, 255 * (iteracije));
+		}
+		if (okno.getIzbiraBarv().getSelectedItem()==okno.getCrnoBelo2()) {
 			int barva = dolociBarvoJuliaCrnoBelo(a, b,new Complex(real, imag));
 			color = new Color(barva, barva, barva);
 		}
@@ -127,7 +151,8 @@ public class MiniPlatno extends JPanel {
 	
 		
 	/**
-	 * pikslu doloci stevilo iteracij, ki so potrebne, da gre tocka c v neskoncnost
+	 * pikslu doloci stevilo iteracij, ki so potrebne, da je |z| > 10 (bo slo neskoncnost),
+	 * oz. vrne maxIteration, ce tocka ne divergira
 	 * @param a prva kompleksna koordinata tocke
 	 * @param b druga kompleksna koordinata tocke
 	 * @param c konstanta v iteraciji z_{n+1} = z_{n}^2 + c
@@ -148,6 +173,14 @@ public class MiniPlatno extends JPanel {
 	}
 	
 	
+	/**
+	 * fukcija, ki doloci barvo tocke na podlagi predznaka imaginarne komponente
+	 * stevila z na koncu iteriranja
+	 * @param a prva kompleksna koordinata tocke
+	 * @param b druga kompleksna koordinata tocke
+	 * @param c konstanta v iteraciji z_{n+1} = z_{n}^2 + c
+	 * @return barva tocke
+	 */
 	public int dolociBarvoJuliaCrnoBelo(double a, double b, Complex c){
 		Complex z = new Complex(a, b);
 		int color;

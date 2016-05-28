@@ -23,9 +23,10 @@ public class Okno extends JFrame {
 	
 	protected Platno platno;
 	protected JTextField realC, imagC, maxIteracij;
-	protected JComboBox<String> izbiraFraktala, izbiraBarv;
+	protected JComboBox<String> izbiraFraktala; 
+	private JComboBox<String> izbiraBarv;
 	private String julia, mandelbrot, crnoBelo1, crnoBelo2, sivo, barva1, barva2;
-	protected JRadioButton rdbtnObKliku1, rdbtnObKliku2;
+	private JRadioButton rdbtnObKliku1, rdbtnObKliku2;
 	private static JFrame frame;
 	static private List<String> koncnice = Arrays.asList("png", "jpg", "jpeg", "gif", "PNG", "JPG", "JPEG", "GIF");
 	
@@ -64,11 +65,13 @@ public class Okno extends JFrame {
 		platno.add(imagC);
 		
 		
-		// gumb za ponovno risanje fraktala z novimi parametri
+		// gumb za risanje fraktala z novimi parametri
 		JButton btnNarisi = new JButton("Narisi");
 		btnNarisi.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
+					// parametre nastavi na zacetno stanje:
+					// gledamo obmocje [-2, 2] x [-2i, 2i]
 					platno.sirinaKR = 4;
 					platno.visinaKR = 4;
 					platno.izhodisceX = 250;
@@ -108,17 +111,21 @@ public class Okno extends JFrame {
 		izbiraFraktala.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if (izbiraFraktala.getSelectedItem()==mandelbrot) {
+					// konstanta ni potrebna
 					realC.setEnabled(false);
 					imagC.setEnabled(false);
-					rdbtnObKliku1.setEnabled(true);
-					rdbtnObKliku2.setEnabled(true);
+					// ok kliku sta dve moznosti
+					getRdbtnObKliku1().setEnabled(true);
+					getRdbtnObKliku2().setEnabled(true);
 				}
 				else if (izbiraFraktala.getSelectedItem()==julia) {
+					// potrebuje konstanto
 					realC.setEnabled(true);
 					imagC.setEnabled(true);
-					rdbtnObKliku1.setSelected(true);
-					rdbtnObKliku1.setEnabled(false);
-					rdbtnObKliku2.setEnabled(false);
+					// ok kliku ni izbire (se lahko samo poveca)
+					getRdbtnObKliku1().setSelected(true);
+					getRdbtnObKliku1().setEnabled(false);
+					getRdbtnObKliku2().setEnabled(false);
 				}
 			}
 		});
@@ -136,72 +143,87 @@ public class Okno extends JFrame {
 		setBarva1("barva1");
 		setBarva2("barva2");
 		String[] barvneOpcije = new String[] {getCrnoBelo1(), getSivo(), getCrnoBelo2(), getBarva1(), getBarva2()};
-		izbiraBarv = new JComboBox<String>(barvneOpcije);
-		izbiraBarv.setBounds(553, 305, 172, 20);
-		platno.add(izbiraBarv);
+		setIzbiraBarv(new JComboBox<String>(barvneOpcije));
+		getIzbiraBarv().setBounds(553, 305, 172, 20);
+		platno.add(getIzbiraBarv());
 		
 		
 		// gumb za shranjevanje slike
-				JButton btnShrani1 = new JButton("Shrani");
-				btnShrani1.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent arg0) {
-						 BufferedImage image = platno.getSlika();
-				            try{
-				            	FileDialog fDialog = new FileDialog(frame,"Shrani", FileDialog.SAVE);
-				            	if (!platno.getJeMandelbrot()) {
-				            		String juliaIme = "";
-				            		if (Double.parseDouble(imagC.getText())<0) {
-				            			juliaIme = String.format("Julia%.3f%.3fi.png", Double.parseDouble(realC.getText()), Double.parseDouble(imagC.getText()));
-				            		}
-				            		else {
-				            			juliaIme = String.format("Julia%.3f+%.3fi.png", Double.parseDouble(realC.getText()), Double.parseDouble(imagC.getText()));
-				            		}
-					            	fDialog.setFile(juliaIme);
-				            	}
-				            	if (platno.getJeMandelbrot()) {
-				            		fDialog.setFile("Mandelbrot.png");
-				            	}
-				            	fDialog.setVisible(true);
-				            	String[] koncnica = fDialog.getFile().split("\\.");
-				            	String path;
-				            	if (!koncnice.contains(koncnica[koncnica.length-1])){
-			            			path = fDialog.getDirectory()+fDialog.getFile()+".png";
-			            		}
-			            		else {
-			            			path = fDialog.getDirectory()+fDialog.getFile();
-			            		}
-								File f = new File(path);				   
-				            	ImageIO.write(image,"png", f);
-				            		}
+		JButton btnShrani = new JButton("Shrani");
+		btnShrani.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				// zapomni si sliko
+				BufferedImage image = platno.getSlika();				
+				try{
+					// okno za izbiro lokacije, kamor bomo shranili sliko, in imena slike
+				    FileDialog fDialog = new FileDialog(frame,"Shrani", FileDialog.SAVE);
+				    // nastavi privzeto ime slike
+				    if (!platno.getJeMandelbrot()) {
+				    	// privzeto ime Juliajeve mnozice vsebuje konstanto c
+				    	String juliaIme = "";
+				        if (Double.parseDouble(imagC.getText())<0) {
+				        	juliaIme = String.format("Julia%.3f%.3fi.png", Double.parseDouble(realC.getText()), Double.parseDouble(imagC.getText()));
+				        }
+				        else {
+				            juliaIme = String.format("Julia%.3f+%.3fi.png", Double.parseDouble(realC.getText()), Double.parseDouble(imagC.getText()));
+				        }
+					    fDialog.setFile(juliaIme);
+				    }
+				    if (platno.getJeMandelbrot()) {
+				    	fDialog.setFile("Mandelbrot.png");
+				    }
+				    fDialog.setVisible(true);
+				    // preveri, ce ima ime koncnico, ki ustreza formatu slike
+				    // ce je nima, doda koncnico .png
+				    String[] koncnica = fDialog.getFile().split("\\.");
+				    String path;
+				    if (!koncnice.contains(koncnica[koncnica.length-1])){
+				    	path = fDialog.getDirectory()+fDialog.getFile()+".png";
+			        }
+			        else {
+			            path = fDialog.getDirectory()+fDialog.getFile();
+			        }
+					File f = new File(path);
+					// shrani sliko
+				    ImageIO.write(image,"png", f);
+				}
 				                
-				            catch(Exception ex){
-				                 ex.printStackTrace();
-				                }
-					}
-				});
-				btnShrani1.setBounds(645, 425, 80, 25);
-				platno.add(btnShrani1);
+				catch(Exception ex){
+				    ex.printStackTrace();
+				}
+			}
+		});
+		btnShrani.setBounds(645, 425, 80, 25);
+		platno.add(btnShrani);
 		
 		JLabel lblKlik = new JLabel("Ob kliku:");
 		lblKlik.setBounds(553, 345, 172, 20);
 		platno.add(lblKlik);
+				
+		// izbira ali se ob kliku na izrisano Mandelbrotovo mnozico 
+		// pribliza fraktal ali se odpre okno s pripadajoco Juliajevo mnozico
 		
-		rdbtnObKliku1 = new JRadioButton("povecaj / pomanjsaj");
-		rdbtnObKliku1.setBounds(553, 365, 172, 20);
-		platno.add(rdbtnObKliku1);
-		rdbtnObKliku1.setSelected(true);
+		// moznost za priblizevanje/oddaljevanje
+		setRdbtnObKliku1(new JRadioButton("povecaj / pomanjsaj"));
+		getRdbtnObKliku1().setBounds(553, 365, 172, 20);
+		platno.add(getRdbtnObKliku1());
+		getRdbtnObKliku1().setSelected(true);
 		
-		rdbtnObKliku2 = new JRadioButton("narisi miniJulia");
-		rdbtnObKliku2.setBounds(553, 385, 172, 20);
-		platno.add(rdbtnObKliku2);
+		// moznost za prikaz miniJulia
+		setRdbtnObKliku2(new JRadioButton("narisi miniJulia"));
+		getRdbtnObKliku2().setBounds(553, 385, 172, 20);
+		platno.add(getRdbtnObKliku2());
 		
-		rdbtnObKliku1.setEnabled(false);
-		rdbtnObKliku2.setEnabled(false);
+		// ker je na zacetku izrisana Juliajeva mnozica, je izbiranje onemogoceno
+		getRdbtnObKliku1().setEnabled(false);
+		getRdbtnObKliku2().setEnabled(false);
 		
+		// zdruzimo obe moznosti
 		ButtonGroup group = new ButtonGroup();
-        group.add(rdbtnObKliku1);
-        group.add(rdbtnObKliku2);
+        group.add(getRdbtnObKliku1());
+        group.add(getRdbtnObKliku2());
 		
+        // ce zapremo glavno okno, se morajo zapreti tudi vsa majhna okna
 		addWindowListener(new java.awt.event.WindowAdapter() {
 		    @Override
 		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
@@ -209,7 +231,6 @@ public class Okno extends JFrame {
 		}
 		});
 		
-
 	}
 	
 
@@ -280,5 +301,35 @@ public class Okno extends JFrame {
 
 	public void setBarva2(String barva2) {
 		this.barva2 = barva2;
+	}
+
+
+	public JComboBox<String> getIzbiraBarv() {
+		return izbiraBarv;
+	}
+
+
+	public void setIzbiraBarv(JComboBox<String> izbiraBarv) {
+		this.izbiraBarv = izbiraBarv;
+	}
+
+
+	public JRadioButton getRdbtnObKliku2() {
+		return rdbtnObKliku2;
+	}
+
+
+	public void setRdbtnObKliku2(JRadioButton rdbtnObKliku2) {
+		this.rdbtnObKliku2 = rdbtnObKliku2;
+	}
+
+
+	public JRadioButton getRdbtnObKliku1() {
+		return rdbtnObKliku1;
+	}
+
+
+	public void setRdbtnObKliku1(JRadioButton rdbtnObKliku1) {
+		this.rdbtnObKliku1 = rdbtnObKliku1;
 	}
 }
