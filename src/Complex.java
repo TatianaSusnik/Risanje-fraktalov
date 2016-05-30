@@ -41,41 +41,6 @@ public class Complex extends Object {
         return y;
     }
     
-    
-    /**
-        Modulus of this Complex number
-        (the distance from the origin in polar coordinates).
-        @return |z| where z is this Complex number.
-    */
-    public double mod() {
-        if (x!=0 || y!=0) {
-            return Math.sqrt(x*x+y*y);
-        } else {
-            return 0d;
-        }
-    }
-    
-   
-    /**
-        Addition of Complex numbers (doesn't change this Complex number).
-        <br>(x+i*y) + (s+i*t) = (x+s)+i*(y+t).
-        @param w is the number to add.
-        @return z+w where z is this Complex number.
-    */
-    public Complex plus(Complex w) {
-        return new Complex(x+w.real(),y+w.imag());
-    }
-    
-    
-    /**
-        Complex multiplication (doesn't change this Complex number).
-        @param w is the number to multiply by.
-        @return z*w where z is this Complex number.
-    */
-    public Complex times(Complex w) {
-        return new Complex(x*w.real()-y*w.imag(),x*w.imag()+y*w.real());
-    }
-    
  
     /**
         String representation of this Complex number.

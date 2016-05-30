@@ -271,14 +271,22 @@ public class Platno extends JPanel implements MouseListener{
 	 * @return stevilo iteracij
 	 */
 	public int steviloIteracijJulia(double a, double b, Complex c){
-		Complex z = new Complex(a, b);
 		maxIteration = Integer.parseInt(okno.maxIteracij.getText());
+		double zR = a;
+		double zI = b;
+		double zrsqr = a*a;
+		double zisqr = b*b;
 		for (int j=0; j <= maxIteration; j++){
-			if (z.mod() > 10) {
+			if ((zrsqr+zisqr) > 100) {
 				return j;
 			}
 			else {
-				z = (z.times(z)).plus(c);
+				zI = zR*zI;
+				zI += zI;
+				zI += c.imag();
+				zR = zrsqr - zisqr + c.real();
+				zrsqr = zR*zR;
+				zisqr = zI*zI;
 			}
 		}
 		return maxIteration;
@@ -294,18 +302,31 @@ public class Platno extends JPanel implements MouseListener{
 	 * @return stevilo odvisno od iteracij (lepse prelivanje barv)
 	 */
 	public double smoothIteracijeJulia(double a, double b, Complex c) {
-		Complex z = new Complex(a, b);
 		maxIteration = Integer.parseInt(okno.maxIteracij.getText());
+		double zR = a;
+		double zI = b;
+		double zrsqr = a*a;
+		double zisqr = b*b;
 		for (int j=0; j <= maxIteration; j++){
-			if (z.mod() > 10) {
+			if ((zrsqr+zisqr) > 100) {
 				for (int i=0; i<3; i++) {
-					z = (z.times(z)).plus(c);
+					zI = zR*zI;
+					zI += zI;
+					zI += c.imag();
+					zR = zrsqr - zisqr + c.real();
+					zrsqr = zR*zR;
+					zisqr = zI*zI;
 					j++;
 				}
-				return j+1-Math.log(Math.log(z.mod()))/Math.log(10);
+				return j+1-Math.log(Math.log(Math.sqrt(zrsqr+zisqr)))/Math.log(10);
 			}
 			else {
-				z = (z.times(z)).plus(c);
+				zI = zR*zI;
+				zI += zI;
+				zI += c.imag();
+				zR = zrsqr - zisqr + c.real();
+				zrsqr = zR*zR;
+				zisqr = zI*zI;
 			}
 		}
 		return maxIteration;
@@ -321,12 +342,15 @@ public class Platno extends JPanel implements MouseListener{
 	 * @return barva tocke
 	 */
 	public int dolociBarvoJuliaCrnoBelo(double a, double b, Complex c){
-		Complex z = new Complex(a, b);
-		int color;
 		maxIteration = Integer.parseInt(okno.maxIteracij.getText());
+		int color;
+		double zR = a;
+		double zI = b;
+		double zrsqr = a*a;
+		double zisqr = b*b;
 		for (int j=0; j <= maxIteration; j++){
-			if (z.mod() > 10) {
-				if (z.imag()>0){
+			if ((zrsqr+zisqr) > 100) {
+				if (zI > 0) {
 					color = 0;
 				}
 				else {
@@ -335,7 +359,12 @@ public class Platno extends JPanel implements MouseListener{
 				return color;
 			}
 			else {
-				z = (z.times(z)).plus(c);
+				zI = zR*zI;
+				zI += zI;
+				zI += c.imag();
+				zR = zrsqr - zisqr + c.real();
+				zrsqr = zR*zR;
+				zisqr = zI*zI;
 			}
 		}
 		color = 0;
@@ -351,14 +380,22 @@ public class Platno extends JPanel implements MouseListener{
 	 * @return stevilo iteracij
 	 */
 	public int steviloIteracijMandelbrot(Complex c){
-		Complex z = new Complex(0, 0);
 		maxIteration = Integer.parseInt(okno.maxIteracij.getText());
+		double zR = 0;
+		double zI = 0;
+		double zrsqr = 0;
+		double zisqr = 0;
 		for (int j=0; j <= maxIteration; j++){
-			if (z.mod() > 2) {
+			if ((zrsqr+zisqr) > 9) {
 				return j;
 			}
 			else {
-				z = (z.times(z)).plus(c);
+				zI = zR*zI;
+				zI += zI;
+				zI += c.imag();
+				zR = zrsqr - zisqr + c.real();
+				zrsqr = zR*zR;
+				zisqr = zI*zI;
 			}
 		}
 		return maxIteration;
@@ -373,18 +410,31 @@ public class Platno extends JPanel implements MouseListener{
 	 * @return stevilo odvisno od iteracij (lepse prelivanje barv)
 	 */
 	public double smoothIteracijeMandelbrot(Complex c){
-		Complex z = new Complex(0, 0);
 		maxIteration = Integer.parseInt(okno.maxIteracij.getText());
+		double zR = 0;
+		double zI = 0;
+		double zrsqr = 0;
+		double zisqr = 0;
 		for (int j=0; j <= maxIteration; j++){
-			if (z.mod() > 3) {
+			if ((zrsqr+zisqr) > 9) {
 				for (int i=0; i<3; i++) {
-					z = (z.times(z)).plus(c);
+					zI = zR*zI;
+					zI += zI;
+					zI += c.imag();
+					zR = zrsqr - zisqr + c.real();
+					zrsqr = zR*zR;
+					zisqr = zI*zI;
 					j++;
 				}
-				return j+1-Math.log(Math.log(z.mod()))/Math.log(3);
+				return j+1-Math.log(Math.log(Math.sqrt(zrsqr+zisqr)))/Math.log(3);
 			}
 			else {
-				z = (z.times(z)).plus(c);
+				zI = zR*zI;
+				zI += zI;
+				zI += c.imag();
+				zR = zrsqr - zisqr + c.real();
+				zrsqr = zR*zR;
+				zisqr = zI*zI;
 			}
 		}
 		return maxIteration;
@@ -398,24 +448,33 @@ public class Platno extends JPanel implements MouseListener{
 	 * @return barva tocke
 	 */
 	public int dolociBarvoMandelbrotCrnoBelo(Complex c){
-		Complex z = new Complex(0, 0);
-		int color;
 		maxIteration = Integer.parseInt(okno.maxIteracij.getText());
+		int color;
+		double zR = 0;
+		double zI = 0;
+		double zrsqr = 0;
+		double zisqr = 0;
 		for (int j=0; j <= maxIteration; j++){
-			if (z.mod() > 10) {
-					if (z.imag()>0){
-						color = 0;
-					}
-					else {
-						color = 255;
-					}
+			if ((zrsqr+zisqr) > 100) {
+				if (zI > 0) {
+					color = 0;
+				}
+				else {
+					color = 255;
+				}
 				return color;
 			}
 			else {
-				z = (z.times(z)).plus(c);
+				zI = zR*zI;
+				zI += zI;
+				zI += c.imag();
+				zR = zrsqr - zisqr + c.real();
+				zrsqr = zR*zR;
+				zisqr = zI*zI;
 			}
 		}
-		return 0;
+		color = 0;
+		return color;
 	}
 	
 		

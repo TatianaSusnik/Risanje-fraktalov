@@ -14,7 +14,6 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
 import javax.swing.JRadioButton;
-
 import java.awt.FileDialog;
 
 
@@ -176,17 +175,19 @@ public class Okno extends JFrame {
 				    fDialog.setVisible(true);
 				    // preveri, ce ima ime koncnico, ki ustreza formatu slike
 				    // ce je nima, doda koncnico .png
-				    String[] koncnica = fDialog.getFile().split("\\.");
-				    String path;
-				    if (!koncnice.contains(koncnica[koncnica.length-1])){
-				    	path = fDialog.getDirectory()+fDialog.getFile()+".png";
-			        }
-			        else {
-			            path = fDialog.getDirectory()+fDialog.getFile();
-			        }
+				    if (fDialog.getFile() != null) {
+					    String[] koncnica = fDialog.getFile().split("\\.");
+					    String path;
+					    if (!koncnice.contains(koncnica[koncnica.length-1])){
+					    	path = fDialog.getDirectory()+fDialog.getFile()+".png";
+				        }
+				        else {
+				            path = fDialog.getDirectory()+fDialog.getFile();
+				        }
 					File f = new File(path);
 					// shrani sliko
 				    ImageIO.write(image,"png", f);
+				    }
 				}
 				                
 				catch(Exception ex){
