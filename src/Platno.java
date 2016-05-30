@@ -91,9 +91,16 @@ public class Platno extends JPanel implements MouseListener{
 				if (okno.klikNaGumb){
 					if (okno.izbiraFraktala.getSelectedItem()==okno.getMandelbrot()) {
 						setJeMandelbrot(true);
+						// ok kliku sta dve moznosti
+						okno.getRdbtnObKliku1().setEnabled(true);
+						okno.getRdbtnObKliku2().setEnabled(true);
 					}
 					else {
 						setJeMandelbrot(false);
+						// ok kliku ni izbire (se lahko samo poveca)
+						okno.getRdbtnObKliku1().setSelected(true);
+						okno.getRdbtnObKliku1().setEnabled(false);
+						okno.getRdbtnObKliku2().setEnabled(false);
 					}
 					okno.klikNaGumb = false;
 				}

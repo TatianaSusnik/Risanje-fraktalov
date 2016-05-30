@@ -114,18 +114,11 @@ public class Okno extends JFrame {
 					// konstanta ni potrebna
 					realC.setEnabled(false);
 					imagC.setEnabled(false);
-					// ok kliku sta dve moznosti
-					getRdbtnObKliku1().setEnabled(true);
-					getRdbtnObKliku2().setEnabled(true);
 				}
 				else if (izbiraFraktala.getSelectedItem()==julia) {
 					// potrebuje konstanto
 					realC.setEnabled(true);
 					imagC.setEnabled(true);
-					// ok kliku ni izbire (se lahko samo poveca)
-					getRdbtnObKliku1().setSelected(true);
-					getRdbtnObKliku1().setEnabled(false);
-					getRdbtnObKliku2().setEnabled(false);
 				}
 			}
 		});
