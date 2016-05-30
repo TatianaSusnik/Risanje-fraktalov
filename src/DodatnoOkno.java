@@ -26,6 +26,7 @@ public class DodatnoOkno extends JFrame {
 		JButton btnPovecaj = new JButton("Povecaj");
 		btnPovecaj.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				okno.klikNaGumb=true;
 				// nastavi parametre, da ustrezajo narisanemu fraktalu
 				okno.izbiraFraktala.setSelectedItem(okno.getJulia());
 				okno.realC.setText(Double.toString(real));

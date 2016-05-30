@@ -28,6 +28,7 @@ public class Okno extends JFrame {
 	private JRadioButton rdbtnObKliku1, rdbtnObKliku2;
 	private static JFrame frame;
 	static private List<String> koncnice = Arrays.asList("png", "jpg", "jpeg", "gif", "PNG", "JPG", "JPEG", "GIF");
+	protected boolean klikNaGumb=true;
 	
 	
 	public Okno(){
@@ -69,6 +70,7 @@ public class Okno extends JFrame {
 		btnNarisi.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
+					klikNaGumb = true;
 					// parametre nastavi na zacetno stanje:
 					// gledamo obmocje [-2, 2] x [-2i, 2i]
 					platno.sirinaKR = 4;

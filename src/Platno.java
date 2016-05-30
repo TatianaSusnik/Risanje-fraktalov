@@ -88,14 +88,21 @@ public class Platno extends JPanel implements MouseListener{
 		vlakno = new Thread(new Runnable() {
 			@Override
 			public void run() {
-				try {
-					ustavi = false;
-					setJeMandelbrot(false);
-					if (okno.izbiraFraktala.getSelectedItem()==okno.getJulia()) {
-						narisiJulia();
-					}
+				if (okno.klikNaGumb){
 					if (okno.izbiraFraktala.getSelectedItem()==okno.getMandelbrot()) {
 						setJeMandelbrot(true);
+					}
+					else {
+						setJeMandelbrot(false);
+					}
+					okno.klikNaGumb = false;
+				}
+				try {
+					ustavi = false;
+					if (!jeMandelbrot) {
+						narisiJulia();
+					}
+					if (jeMandelbrot) {
 						narisiMandelbrot();
 					}
 					vlakno = null;
