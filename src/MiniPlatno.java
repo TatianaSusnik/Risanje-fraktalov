@@ -16,6 +16,7 @@ public class MiniPlatno extends JPanel {
 	private Okno okno;
 	private Thread vlakno;
 	private boolean ustavi;
+	private double spremembaX, spremembaY;
 	
 	
 	public MiniPlatno(Okno o, int sirina, int visina) {
@@ -23,6 +24,8 @@ public class MiniPlatno extends JPanel {
 		this.sirina = sirina;
 		this.visina = visina;
 		okno = o;
+		spremembaX = (double)4/sirina;
+		spremembaY = (double)4/visina;
 	}
 	
 	
@@ -69,29 +72,37 @@ public class MiniPlatno extends JPanel {
 	 */
 	public void narisiMiniJulia(double real, double imag) throws InterruptedException {
 		slika = new BufferedImage(sirina, visina, BufferedImage.TYPE_INT_RGB);
+		Vector<Double> koordinati = kompleksneKoordinate(0, 0);
+		double a = koordinati.get(0);
 		if (imag==0){
 			// imaginarna komponenta stevila c je nic, zato je dovolj izracunati le cetrtino slike
 			for (int x=0; x <= sirina/2; x++){
 				if (ustavi) { return; }
+				double b = koordinati.get(1);
 				for (int y=0; y <= visina/2; y++){
-					Color color = barvaJulia(x, y, real, imag);
+					Color color = barvaJulia(a, b, real, imag);
 					// nastavi pikslom barvo
 					slika.setRGB(x, y, color.getRGB());
 					slika.setRGB(sirina-1-x, y, color.getRGB());
 					slika.setRGB(x, visina-1-y, color.getRGB());
 					slika.setRGB(sirina-1-x, visina-1-y, color.getRGB());
+					b = b-spremembaY;
 				}
+				a = a+spremembaX;
 			}
 		}
 		else {
 			// imaginarna komponenta stevila c ni nic, dovolj je izracunati polovico slike
 			for (int x=0; x <= sirina/2; x++){
+				double b = koordinati.get(1);
 				for (int y=0; y < visina; y++){
-					Color color = barvaJulia(x, y, real, imag);
+					Color color = barvaJulia(a, b, real, imag);
 					// nastavi pikslu barvo
 					slika.setRGB(x, y, color.getRGB());
 					slika.setRGB(sirina-1-x, visina-1-y, color.getRGB());
+					b = b-spremembaY;
 				}
+				a = a+spremembaX;
 			}
 		}
 		repaint();
@@ -106,13 +117,9 @@ public class MiniPlatno extends JPanel {
 	 * @param imag - imaginarna komponenta konstante c
 	 * @return barva tocke
 	 */
-	public Color barvaJulia(int x, int y, double real, double imag) {
+	public Color barvaJulia(double a, double b, double real, double imag) {
 		Color color = null;
 		int iteracije=0;
-		// izracuna kompleksni koordinati tocke
-		Vector<Double> koordinati = kompleksneKoordinate(x, y);
-		double a = koordinati.get(0);
-		double b = koordinati.get(1);
 		maxIteration = Integer.parseInt(okno.maxIteracij.getText());
 		// izracuna barvo
 		if (okno.getIzbiraBarv().getSelectedItem()==okno.getCrnoBelo1()) {

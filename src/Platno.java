@@ -27,6 +27,7 @@ public class Platno extends JPanel implements MouseListener{
 	private boolean ustavi;
 	protected double sirinaKR = 4, visinaKR = 4;
 	protected double sredisceX = 0, sredisceY = 0;
+	private double spremembaX, spremembaY;
 	private ArrayList<Color> colors;
 	
 	
@@ -61,7 +62,7 @@ public class Platno extends JPanel implements MouseListener{
 	
 
 	public Dimension getPreferredSize(){
-		return new Dimension(sirina*3/2, visina-9);
+		return new Dimension(sirina*3/2, visina-10);
 	}	
 	
 
@@ -112,15 +113,16 @@ public class Platno extends JPanel implements MouseListener{
 	 */
 	public void narisiJulia() throws InterruptedException {
 		setSlika(new BufferedImage(sirina, visina, BufferedImage.TYPE_INT_RGB));
+		Vector<Double> koordinati = kompleksneKoordinate(0, 0);
+		double a = koordinati.get(0);		
+		spremembaX = (double)sirinaKR/sirina;
+		spremembaY = (double)visinaKR/visina;
 		for (int x=0; x<sirina; x++) {
 			if (ustavi) {return;}
+			double b = koordinati.get(1);
 			for (int y=0; y<visina; y++) {
 				Color color = null;
 				int iteracije=0;
-				// izracuna kompleksni koordinati tocke
-				Vector<Double> koordinati = kompleksneKoordinate(x, y);
-				double a = koordinati.get(0);
-				double b = koordinati.get(1);
 				// prebere konstanto c
 				double real = (double) Double.parseDouble(okno.realC.getText());
 				double imag = (double) Double.parseDouble(okno.imagC.getText());
@@ -176,7 +178,9 @@ public class Platno extends JPanel implements MouseListener{
 
 				// nastavi pikslu barvo
 				getSlika().setRGB(x, y, color.getRGB());
+				b = b-spremembaY;
 			}
+			a = a+spremembaX;
 		}
 		repaint();
 	}
@@ -188,14 +192,15 @@ public class Platno extends JPanel implements MouseListener{
 	 */
 	public void narisiMandelbrot() throws InterruptedException {
 		setSlika(new BufferedImage(sirina, visina, BufferedImage.TYPE_INT_RGB));
+		Vector<Double> koordinati = kompleksneKoordinate(0, 0);
+		double a = koordinati.get(0);		
+		spremembaX = (double)sirinaKR/sirina;
+		spremembaY = (double)visinaKR/visina;
 		for (int x=0; x < sirina; x++) {
+			double b = koordinati.get(1);
 			for (int y=0; y < visina; y++) {
 				Color color = null;
 				int iteracije;
-				// izracuna kompleksni koordinati tocke
-				Vector<Double> koordinati = kompleksneKoordinate(x, y);
-				double a = koordinati.get(0);
-				double b = koordinati.get(1);
 				maxIteration = Integer.parseInt(okno.maxIteracij.getText());
 				// izracuna barvo
 				if (okno.getIzbiraBarv().getSelectedItem()==okno.getCrnoBelo1()) {
@@ -249,7 +254,9 @@ public class Platno extends JPanel implements MouseListener{
 				
 				// nastavi pikslu barvo
 				getSlika().setRGB(x, y, color.getRGB());
+				b = b-spremembaY;
 			}
+			a = a+spremembaX;
 		}
 		repaint();
 	}
@@ -419,8 +426,8 @@ public class Platno extends JPanel implements MouseListener{
 	 * @return vrne kompleksni koordinati tocke
 	 */
 	public Vector<Double> kompleksneKoordinate(int x, int y){
-		double a = sredisceX + (double)sirinaKR/sirina*(x - 250);
-		double b = sredisceY + (double)visinaKR/visina*(250 - y);
+		double a = sredisceX + (double)sirinaKR/sirina*(x - sirina/2);
+		double b = sredisceY + (double)visinaKR/visina*(visina/2 - y);
 		Vector<Double> koordinati = new Vector<Double>(2);
 		koordinati.add(a);
 		koordinati.add(b);
