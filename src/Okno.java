@@ -6,14 +6,17 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.awt.event.ActionEvent;
 
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
 import javax.swing.JRadioButton;
+
 import java.awt.FileDialog;
 
 
@@ -167,22 +170,7 @@ public class Okno extends JFrame {
 				    if (platno.getJeMandelbrot()) {
 				    	fDialog.setFile("Mandelbrot.png");
 				    }
-				    fDialog.setVisible(true);
-				    // preveri, ce ima ime koncnico, ki ustreza formatu slike
-				    // ce je nima, doda koncnico .png
-				    if (fDialog.getFile() != null) {
-					    String[] koncnica = fDialog.getFile().split("\\.");
-					    String path;
-					    if (!koncnice.contains(koncnica[koncnica.length-1])){
-					    	path = fDialog.getDirectory()+fDialog.getFile()+".png";
-				        }
-				        else {
-				            path = fDialog.getDirectory()+fDialog.getFile();
-				        }
-					File f = new File(path);
-					// shrani sliko
-				    ImageIO.write(image,"png", f);
-				    }
+				    shrani(fDialog, image);
 				}
 				                
 				catch(Exception ex){
@@ -228,6 +216,46 @@ public class Okno extends JFrame {
 		}
 		});
 		
+	}
+	
+	/**
+	 * preveri, ce ima ime ustrezno koncnico, 
+	 * v primeru, da je nima, doda .png in preveri, ce datoteka ze obstaja
+	 * ter shrani, ce je potrebno
+	 * @param fDialog
+	 * @param image
+	 * @throws IOException
+	 */
+	private void shrani(FileDialog fDialog, BufferedImage image) throws IOException {
+		fDialog.setVisible(true);
+	    // preveri, ce ima ime koncnico, ki ustreza formatu slike
+	    // ce je nima, doda koncnico .png
+	    if (fDialog.getFile() != null) {
+		    String[] koncnica = fDialog.getFile().split("\\.");
+		    String path;
+		    if (!koncnice.contains(koncnica[koncnica.length-1])){
+		    	path = fDialog.getDirectory()+fDialog.getFile()+".png";
+		    	File f = new File(path);
+		    	if(f.exists()) {
+		    		Object[] options = { "Da", "Ne" };
+         		    int odgovor = JOptionPane.showOptionDialog(null, 
+         		    		fDialog.getFile()+".png"+" ze obstaja.\nAli jo zelite zamenjati?", "Potrditev shranjevanja kot",  
+         		       JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,null, options, options[0]);
+         		    if (odgovor == JOptionPane.YES_OPTION) {
+         		    	ImageIO.write(image,"png", f);
+         		    }
+         		    else {
+         		    	shrani(fDialog, image);
+         		    }
+         		}
+	        }
+	        else {
+	            path = fDialog.getDirectory()+fDialog.getFile();
+	            File f = new File(path);
+	            // shrani sliko
+	            ImageIO.write(image,"png", f);
+	        }
+	    }
 	}
 	
 
