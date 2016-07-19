@@ -123,7 +123,7 @@ public class MiniPlatno extends JPanel {
 		maxIteration = Integer.parseInt(okno.maxIteracij.getText());
 		// izracuna barvo
 		if (okno.getIzbiraBarv().getSelectedItem()==okno.getCrnoBelo1()) {
-			iteracije = steviloIteracijJulia(a, b, new Complex(real, imag));
+			iteracije = steviloIteracijJulia(a, b, real, imag);
 			if (iteracije >= maxIteration) {
 				color = new Color(255, 255, 255);
 			}
@@ -133,17 +133,17 @@ public class MiniPlatno extends JPanel {
 		}
 		
 		if (okno.getIzbiraBarv().getSelectedItem()==okno.getSivo()) {
-			double nsmooth = smoothIteracijeJulia(a, b,new Complex(real, imag));
+			double nsmooth = smoothIteracijeJulia(a, b, real, imag);
 			color = Color.getHSBColor(0, 0, (float) Math.sqrt(nsmooth/maxIteration));
 		}
 
 		if (okno.getIzbiraBarv().getSelectedItem()==okno.getCrnoBelo2()) {
-			int barva = dolociBarvoJuliaCrnoBelo(a, b,new Complex(real, imag));
+			int barva = dolociBarvoJuliaCrnoBelo(a, b, real, imag);
 			color = new Color(barva, barva, barva);
 		}
 		
 		if (okno.getIzbiraBarv().getSelectedItem()==okno.getBarva1()) {
-			double nsmooth = smoothIteracijeJulia(a, b,new Complex(real, imag));
+			double nsmooth = smoothIteracijeJulia(a, b, real, imag);
 			int colorIndex = (int) (nsmooth/maxIteration*768);
 			if (colorIndex >= 768 || colorIndex < 0) {
 				colorIndex = 0;
@@ -152,7 +152,7 @@ public class MiniPlatno extends JPanel {
 		}
 		
 		if (okno.getIzbiraBarv().getSelectedItem()==okno.getBarva2()) {
-			double nsmooth = smoothIteracijeJulia(a, b,new Complex(real, imag));
+			double nsmooth = smoothIteracijeJulia(a, b, real, imag);
 			if (nsmooth == maxIteration) {
 				color = Color.getHSBColor(0, 1, 0);
 			}
@@ -162,12 +162,12 @@ public class MiniPlatno extends JPanel {
 		}
 		
 		if (okno.getIzbiraBarv().getSelectedItem()==okno.getBarva3()) {
-			iteracije = steviloIteracijJulia(a, b,new Complex(real, imag));
+			iteracije = steviloIteracijJulia(a, b, real, imag);
 			color = Color.getHSBColor(iteracije % 256, 255, 255 * (iteracije ));
 		}
 
 		if (okno.getIzbiraBarv().getSelectedItem()==okno.getBarva4()) {
-			double nsmooth = smoothIteracijeJulia(a, b,new Complex(real, imag));
+			double nsmooth = smoothIteracijeJulia(a, b, real, imag);
 			color = Color.getHSBColor((float) ((nsmooth/maxIteration) % 256), 0.9f,(float) (255 * nsmooth/maxIteration));
 		}
 		
@@ -183,7 +183,7 @@ public class MiniPlatno extends JPanel {
 	 * @param c konstanta v iteraciji z_{n+1} = z_{n}^2 + c
 	 * @return stevilo iteracij
 	 */
-	public int steviloIteracijJulia(double a, double b, Complex c){
+	public int steviloIteracijJulia(double a, double b, double real, double imag){
 		maxIteration = Integer.parseInt(okno.maxIteracij.getText());
 		double zR = a;
 		double zI = b;
@@ -196,8 +196,8 @@ public class MiniPlatno extends JPanel {
 			else {
 				zI = zR*zI;
 				zI += zI;
-				zI += c.imag();
-				zR = zrsqr - zisqr + c.real();
+				zI += imag;
+				zR = zrsqr - zisqr + real;
 				zrsqr = zR*zR;
 				zisqr = zI*zI;
 			}
@@ -214,7 +214,7 @@ public class MiniPlatno extends JPanel {
 	 * @param c konstanta v iteraciji z_{n+1} = z_{n}^2 + c
 	 * @return stevilo odvisno od iteracij (lepse prelivanje barv)
 	 */
-	public double smoothIteracijeJulia(double a, double b, Complex c) {
+	public double smoothIteracijeJulia(double a, double b, double real, double imag) {
 		maxIteration = Integer.parseInt(okno.maxIteracij.getText());
 		double zR = a;
 		double zI = b;
@@ -225,8 +225,8 @@ public class MiniPlatno extends JPanel {
 				for (int i=0; i<3; i++) {
 					zI = zR*zI;
 					zI += zI;
-					zI += c.imag();
-					zR = zrsqr - zisqr + c.real();
+					zI += imag;
+					zR = zrsqr - zisqr + real;
 					zrsqr = zR*zR;
 					zisqr = zI*zI;
 					j++;
@@ -236,8 +236,8 @@ public class MiniPlatno extends JPanel {
 			else {
 				zI = zR*zI;
 				zI += zI;
-				zI += c.imag();
-				zR = zrsqr - zisqr + c.real();
+				zI += imag;
+				zR = zrsqr - zisqr + real;
 				zrsqr = zR*zR;
 				zisqr = zI*zI;
 			}
@@ -254,7 +254,7 @@ public class MiniPlatno extends JPanel {
 	 * @param c konstanta v iteraciji z_{n+1} = z_{n}^2 + c
 	 * @return barva tocke
 	 */
-	public int dolociBarvoJuliaCrnoBelo(double a, double b, Complex c){
+	public int dolociBarvoJuliaCrnoBelo(double a, double b, double real, double imag){
 		maxIteration = Integer.parseInt(okno.maxIteracij.getText());
 		int color;
 		double zR = a;
@@ -274,8 +274,8 @@ public class MiniPlatno extends JPanel {
 			else {
 				zI = zR*zI;
 				zI += zI;
-				zI += c.imag();
-				zR = zrsqr - zisqr + c.real();
+				zI += imag;
+				zR = zrsqr - zisqr + real;
 				zrsqr = zR*zR;
 				zisqr = zI*zI;
 			}
